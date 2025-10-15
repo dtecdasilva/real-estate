@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase"; 
+import Image from "next/image";
 
 interface FirebaseUser {
   id: string;
@@ -169,7 +170,7 @@ export default function AdminsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <img
+                    <Image
                       src={user.profileImage}
                       alt="Profile"
                       width={50}
@@ -179,7 +180,7 @@ export default function AdminsPage() {
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <img
+                    <Image
                       src={user.idDocumentImage}
                       alt="ID"
                       width={50}
@@ -237,11 +238,12 @@ export default function AdminsPage() {
             className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center"
             onClick={() => setSelectedImage(null)}
           >
-            <img
-              src={selectedImage}
-              alt="Full View"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-            />
+              <Image
+                src={selectedImage}
+                alt="Full View"
+                fill
+                className="object-contain rounded shadow-lg"
+              />
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 text-white text-3xl font-bold"

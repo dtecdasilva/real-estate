@@ -7,11 +7,26 @@ import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react";
 import { Calendar, X, Video, Phone } from "lucide-react";
-import Link from "next/link";
+import Image from "next/image";
+
+type Listing = {
+  id?: string;
+  title: string;
+  address: string;
+  city: string;
+  description: string;
+  type: string;
+  price: number;
+  months: string;
+  file: string;
+  file2?: string;
+  file3?: string;
+  video?: string;
+};
 
 const ListingPage = () => {
   const { id } = useParams();
-  const [listing, setListing] = useState<any>(null);
+  const [listing, setListing] = useState<Listing | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -30,8 +45,9 @@ const ListingPage = () => {
         const docRef = doc(db, "listings", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setListing(docSnap.data());
-        } else {
+          setListing(docSnap.data() as Listing);
+        }
+        else {
           console.error("No such document!");
         }
       }
@@ -155,21 +171,27 @@ const ListingPage = () => {
         {/* Images */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
-            <img
+            <Image
               src={listing.file}
               alt="Main"
+              width={800}
+              height={500}
               className="w-full h-[400px] object-cover rounded-xl shadow"
             />
           </div>
           <div className="grid grid-rows-2 gap-2 h-[400px]">
-            <img
-              src={listing.file2}
-              alt="Gallery 1"
-              className="w-full h-full object-cover rounded-xl shadow"
-            />
-            <img
-              src={listing.file3}
-              alt="Gallery 2"
+              <Image
+                src={listing.file2 || "/placeholder.jpg"}
+                alt="Gallery 2"
+                width={400}
+                height={200}
+                className="w-full h-full object-cover rounded-xl shadow"
+              />
+            <Image
+              src={listing.file3 || "/placeholder.jpg"}
+              alt="Gallery 3"
+              width={400}
+              height={200}
               className="w-full h-full object-cover rounded-xl shadow"
             />
           </div>

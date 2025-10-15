@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { LayoutDashboard, Plus, Home, MessageSquare, Settings, User, Users } from "lucide-react";
+import { LayoutDashboard, Home, User, Users } from "lucide-react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";   // ⬅️ your Firestore config
 import { useUser } from "@clerk/nextjs"; // ⬅️ or your auth hook
@@ -26,7 +26,7 @@ export default function AgentSidebar() {
 
   return (
     <aside className="w-64 bg-white border-r p-6 hidden md:block">
-      <h2 className="text-lg font-semibold mb-8">Agent Panel</h2>
+      <Link href="/" className="text-lg font-semibold mb-8">Home</Link><br /><br />
       <nav className="flex flex-col gap-4">
         <SidebarLink icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" href="/dashboard" />
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Plus, Flag, Heart, User, LayoutDashboard,  } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import WhatAreYouLookingFor from "./WhatAreYouLookingFor";
@@ -11,14 +11,15 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
-import UploadForm from "./upload-form/page";
+import UploadForm from "@/components/ui/UploadForm";
 
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 import { Menu } from "lucide-react";
-import { useRouter } from "next/navigation";
-import PropertyDetails from "@/app/property/page";
 import { doc, getDoc } from "firebase/firestore"; 
+import PropertyDetails from "@/components/ui/PropertyDetails";
+
+
 
 
 const images = ["/hero1.jpg", "/hero2.jpg", "/hero3.jpg"];
@@ -31,12 +32,7 @@ export default function Hero() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
   const [uploadedImageUrl3, setUploadedImageUrl3] = useState('');
-  const [rentOpen, setRentOpen] = useState(false);
-  const [buyOpen, setBuyOpen] = useState(false);
-  const router = useRouter();
   const { user } = useUser();
-  const rentDropdownRef = useRef<HTMLDivElement | null>(null);
-  const buyDropdownRef = useRef<HTMLDivElement | null>(null);
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -53,6 +49,11 @@ export default function Hero() {
     fetchStatus();
   }, [user]);
 
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("Page mounted");
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -255,7 +256,10 @@ export default function Hero() {
         </button>
       </div>
     </section>
-    <PropertyDetails limit={3} showFilters={false} />
+    <Suspense fallback={<div>Loading listings...</div>}>
+      <PropertyDetails limit={3} showFilters={false} />
+    </Suspense>
+    <Button onClick={() => setCount(count + 1)}>Clicked {count} times</Button>
     <WhatAreYouLookingFor />
     <ContactSection/>
     <Footer />

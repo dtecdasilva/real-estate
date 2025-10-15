@@ -6,14 +6,12 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AgentSidebar from "@/components/ui/agent-sidebar";
-import UploadForm from "@/app/upload-form/page";
+import UploadForm from "@/components/ui/UploadForm";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default function ProfilePage() {
   const { user } = useUser();
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [idImage, setIdImage] = useState<string | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
   const [fullName, setFullName] = useState('');
@@ -25,17 +23,6 @@ export default function ProfilePage() {
       setFullName(`${user.firstName || ""} ${user.lastName || ""}`);
     }
   }, [user]);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: "profile" | "id") => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        type === "profile" ? setProfileImage(reader.result as string) : setIdImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleNameSubmit = async () => {
     if (!user) return;
@@ -103,16 +90,14 @@ export default function ProfilePage() {
                 <Input
                   type="text"
                   placeholder="Full Name"
-                  name="name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full border p-2 rounded"
                 />
               </div>
 
               <div>
                 <label className="text-sm font-medium">Upload Profile Photo</label>
-                <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
+                <UploadForm onUpload={(url) => setUploadedImageUrl(url)} /> 
               </div>
 
               <div>

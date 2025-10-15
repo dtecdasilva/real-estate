@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Home, Eye, MessageSquare, User } from "lucide-react";
 import AgentSidebar from "@/components/ui/agent-sidebar";
 
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function AgentDashboard() {
   const { user } = useUser();
@@ -41,7 +41,7 @@ export default function AgentDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">12</p>
+              <p className="text-2xl font-bold"></p>
             </CardContent>
           </Card>
 
@@ -52,7 +52,7 @@ export default function AgentDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">1,450</p>
+              <p className="text-2xl font-bold"></p>
             </CardContent>
           </Card>
 
@@ -63,7 +63,7 @@ export default function AgentDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">23</p>
+              <p className="text-2xl font-bold"></p>
             </CardContent>
           </Card>
         </div>
@@ -74,10 +74,10 @@ export default function AgentDashboard() {
             <CardTitle>Recent Listings</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
+            {/* <ul className="space-y-3">
               <li className="p-4 border rounded-md">🏠 Studio at Biyem-Assi — FCFA 150,000</li>
               <li className="p-4 border rounded-md">🏠 Apartment in Bonamoussadi — FCFA 250,000</li>
-            </ul>
+            </ul> */}
           </CardContent>
         </Card>
       </main>

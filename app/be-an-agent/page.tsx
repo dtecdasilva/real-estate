@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import ContactSection from '../ContactSection';
+import Image from "next/image";
 
 export default function BeAnAgent() {
   return (
@@ -35,9 +36,11 @@ export default function BeAnAgent() {
             After creating an account, go to your dashboard and click on profile. upload the required documents and our team will verify your details.  
           </p>
         </section>
-        <img src="scn1.jpg" alt="" />
-        <img src="scn2.jpg" alt="" />
-        <img src="scn3.jpg" alt="" />
+        <div className="relative w-full h-64">
+          <Image src="/scn1.jpg" alt="Screenshot 1" fill className="object-cover rounded-lg" />
+          <Image src="/scn2.jpg" alt="Screenshot 2" fill className="object-cover rounded-lg" />
+          <Image src="/scn3.jpg" alt="Screenshot 3" fill className="object-cover rounded-lg" />
+        </div>
 
         {/* Step 3 */}
         <section>

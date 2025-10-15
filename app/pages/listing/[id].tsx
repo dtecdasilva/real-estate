@@ -1,16 +1,26 @@
-// pages/listing/[id].tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import Image from "next/image";
+
+type Listing = {
+  id: string;
+  file: string;
+  title: string;
+  address: string;
+  city: string;
+  description: string;
+  price: number;
+  months: string;
+};
 
 const ListingPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [listing, setListing] = useState<any>(null);
+  const [listing, setListing] = useState<Listing | null>(null);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -18,7 +28,7 @@ const ListingPage = () => {
         const docRef = doc(db, "listings", id as string);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setListing({ id: docSnap.id, ...docSnap.data() });
+          setListing({ id: docSnap.id, ...docSnap.data() } as Listing);
         }
       }
     };
@@ -29,9 +39,11 @@ const ListingPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-4">
-      <img
+      <Image
         src={listing.file}
         alt={listing.title}
+        width={800}
+        height={500}
         className="w-full h-96 object-cover rounded-md shadow-md"
       />
       <h1 className="text-3xl font-bold mt-6 mb-2">{listing.title}</h1>

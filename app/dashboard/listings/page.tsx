@@ -5,6 +5,7 @@ import AgentSidebar from "@/components/ui/agent-sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 
 
@@ -33,7 +34,6 @@ export default function ListingsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const itemsPerPage = 5;
-  const [expandedDesc, setExpandedDesc] = useState<Record<string, boolean>>({});
   const { user } = useUser();
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
   const [formData, setFormData] = useState<Partial<Listing>>({});
@@ -202,8 +202,8 @@ export default function ListingsPage() {
                     </td>
                   {[l.file, l.file2, l.file3].map((file, idx) => (
                     <td key={idx} className="px-4 py-3">
-                      <img
-                        src={file}
+                      <Image
+                        src={file || "/placeholder.png"} // optional fallback
                         alt={`File ${idx + 1}`}
                         width={50}
                         height={50}
@@ -271,11 +271,14 @@ export default function ListingsPage() {
             className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center"
             onClick={() => setSelectedImage(null)}
           >
-            <img
-              src={selectedImage}
-              alt="Full View"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-            />
+            <div className="relative w-full h-screen flex items-center justify-center">
+              <Image
+                src={selectedImage}
+                alt="Full View"
+                fill
+                className="object-contain rounded shadow-lg"
+              />
+            </div>
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 text-white text-3xl font-bold"
