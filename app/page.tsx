@@ -259,7 +259,6 @@ export default function Hero() {
     <Suspense fallback={<div>Loading listings...</div>}>
       <PropertyDetails limit={3} showFilters={false} />
     </Suspense>
-    <Button onClick={() => setCount(count + 1)}>Clicked {count} times</Button>
     <WhatAreYouLookingFor />
     <ContactSection/>
     <Footer />
