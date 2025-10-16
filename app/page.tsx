@@ -49,8 +49,6 @@ export default function Hero() {
     fetchStatus();
   }, [user]);
 
-  const [count, setCount] = useState(0);
-
   useEffect(() => {
     console.log("Page mounted");
   }, []);
