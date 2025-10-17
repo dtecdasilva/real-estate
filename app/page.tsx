@@ -133,15 +133,12 @@ export default function Hero() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-10 font-medium text-white relative">
-  <Link href="/" className="hover:text-blue-400">Home</Link>
-  <Link href="/property?cat=rent" className="hover:text-blue-400">Rent</Link>
-  <Link href="/property?cat=buy" className="hover:text-blue-400">Buy</Link>
-  <Link href="/be-an-agent" className="hover:text-blue-400">Be an Agent</Link>
-  <Link href="/" className="hover:text-blue-400">Contact</Link>
-</nav>
-
-
-
+          <Link href="/" className="hover:text-blue-400">Home</Link>
+          <Link href="/property?cat=rent" className="hover:text-blue-400">Rent</Link>
+          <Link href="/property?cat=buy" className="hover:text-blue-400">Buy</Link>
+          <Link href="/be-an-agent" className="hover:text-blue-400">Be an Agent</Link>
+          <Link href="/" className="hover:text-blue-400">Contact</Link>
+        </nav>
 
         {/* CTA & Icons */}
         <div className="hidden md:flex items-center gap-4">
@@ -178,8 +175,11 @@ export default function Hero() {
         </div>
 
         {/* Mobile Menu */}
-        {mobileOpen && (
-          <div className="md:hidden flex flex-col items-start gap-4 mt-4 w-full text-white">
+        <div
+          className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white p-6 transform transition-transform duration-300 ease-in-out z-50
+            ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
+        >
+          <div className="flex flex-col gap-4">
             <Link href="/" className="hover:text-blue-400">Home</Link>
             <Link href="/property?cat=rent" className="hover:text-blue-400">Rent</Link>
             <Link href="/property?cat=buy" className="hover:text-blue-400">Buy</Link>
@@ -198,6 +198,7 @@ export default function Hero() {
             >
               Add Listing
             </Button>
+
             <div className="flex gap-4 mt-2">
               <Flag className="w-5 h-5 cursor-pointer" />
               <SignedIn>
@@ -218,7 +219,7 @@ export default function Hero() {
               </SignedOut>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
 
