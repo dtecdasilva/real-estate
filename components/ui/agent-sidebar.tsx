@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { LayoutDashboard, Home, User, Users } from "lucide-react";
+import { LayoutDashboard, Home, User, Users, Menu, X } from "lucide-react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";   // ⬅️ your Firestore config
 import { useUser } from "@clerk/nextjs"; // ⬅️ or your auth hook
@@ -23,25 +23,55 @@ export default function AgentSidebar() {
     };
     fetchRole();
   }, [user?.id]);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <aside className="w-64 bg-white border-r p-6 hidden md:block">
-      <Link href="/" className="text-lg font-semibold mb-8">Home</Link><br /><br />
-      <nav className="flex flex-col gap-4">
-        <SidebarLink icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" href="/dashboard" />
+    <>
+      {/* Mobile menu button */}
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded shadow"
+        onClick={() => setMobileOpen(true)}
+      >
+        <Menu className="w-6 h-6 text-gray-700" />
+      </button>
 
-        {/* 👇 Only show Users tab if role is NOT agent */}
-        {role !== "agent" && (
-          <SidebarLink icon={<Users className="w-4 h-4" />} label="Users" href="/dashboard/users" />
-        )}
+      {/* Overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
 
-        <SidebarLink icon={<Home className="w-4 h-4" />} label="Listings" href="/dashboard/listings" />
-        {/* <SidebarLink icon={<Plus className="w-4 h-4" />} label="Properties" href="/dashboard/new" /> */}
-        {/* <SidebarLink icon={<MessageSquare className="w-4 h-4" />} label="Messages" href="/dashboard/messages" /> */}
-        <SidebarLink icon={<User className="w-4 h-4" />} label="Profile" href="/dashboard/profile" />
-        {/* <SidebarLink icon={<Settings className="w-4 h-4" />} label="Settings" href="/dashboard/settings" /> */}
-      </nav>
-    </aside>
+      {/* Sidebar */}
+      <aside
+        className={`
+          fixed top-0 left-0 h-full w-64 bg-white border-r p-6 z-50 transform transition-transform duration-300 ease-in-out
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full"} 
+          md:translate-x-0 md:relative md:block
+        `}
+      >
+        {/* Close button for mobile */}
+        <div className="md:hidden flex justify-end mb-4">
+          <button onClick={() => setMobileOpen(false)}>
+            <X className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
+
+        {/* Sidebar content */}
+        <Link href="/" className="text-lg font-semibold mb-8 inline-block">Home</Link>
+        <nav className="flex flex-col gap-4">
+          <SidebarLink icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" href="/dashboard" />
+
+          {role !== "agent" && (
+            <SidebarLink icon={<Users className="w-4 h-4" />} label="Users" href="/dashboard/users" />
+          )}
+
+          <SidebarLink icon={<Home className="w-4 h-4" />} label="Listings" href="/dashboard/listings" />
+          <SidebarLink icon={<User className="w-4 h-4" />} label="Profile" href="/dashboard/profile" />
+        </nav>
+      </aside>
+    </>
   );
 }
 
