@@ -14,7 +14,7 @@ export default function AgentDashboard() {
     <div className="flex min-h-screen bg-muted">
       <AgentSidebar />
 
-      <main className="flex-1 p-6 md:ml-64">
+      <main className="flex-1 p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">
             Welcome, {user?.firstName || user?.emailAddresses[0]?.emailAddress}

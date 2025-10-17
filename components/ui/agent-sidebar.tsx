@@ -29,7 +29,7 @@ export default function AgentSidebar() {
     <>
       {/* Mobile menu button */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded shadow"
+        className="md:hidden fixed top-4 left-4 right-4 z-50 p-2 bg-white rounded shadow"
         onClick={() => setMobileOpen(true)}
       >
         <Menu className="w-6 h-6 text-gray-700" />
