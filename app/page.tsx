@@ -175,51 +175,64 @@ export default function Hero() {
         </div>
 
         {/* Mobile Menu */}
-        <div
-  className={`fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-95 text-white p-6 transform transition-transform duration-300 ease-in-out z-[9999]
-    ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
->
-  <div className="flex flex-col gap-4">
-    <Link href="/" className="hover:text-blue-400">Home</Link>
-    <Link href="/property?cat=rent" className="hover:text-blue-400">Rent</Link>
-    <Link href="/property?cat=buy" className="hover:text-blue-400">Buy</Link>
-    <Link href="/be-an-agent" className="hover:text-blue-400">Be an Agent</Link>
-    <Link href="/" className="hover:text-blue-400">Contact</Link>
+        {mobileOpen && (
+  <>
+    {/* Overlay background */}
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
+      onClick={() => setMobileOpen(false)}
+    />
 
-    <Button
-      onClick={() => {
-        if (!isVerified) {
-          alert("Your account is not verified. Please wait for your account to be verified");
-          return;
-        }
-        setShowModal(true);
-      }}
-      className="bg-blue-600 text-white w-full mt-2"
+    {/* Drawer menu */}
+    <div
+      className={`fixed top-0 right-0 h-full w-72 bg-gray-900 text-white p-6 transform transition-transform duration-300 ease-in-out z-[9999] ${
+        mobileOpen ? "translate-x-0" : "translate-x-full"
+      }`}
     >
-      Add Listing
-    </Button>
+      <div className="flex flex-col gap-4 h-full overflow-y-auto">
+        <Link href="/" className="hover:text-blue-400">Home</Link>
+        <Link href="/property?cat=rent" className="hover:text-blue-400">Rent</Link>
+        <Link href="/property?cat=buy" className="hover:text-blue-400">Buy</Link>
+        <Link href="/be-an-agent" className="hover:text-blue-400">Be an Agent</Link>
+        <Link href="/" className="hover:text-blue-400">Contact</Link>
 
-    <div className="flex gap-4 mt-2">
-      <Flag className="w-5 h-5 cursor-pointer" />
-      <SignedIn>
-        <Link href="/dashboard">
-          <LayoutDashboard className="w-5 h-5 cursor-pointer" />
-        </Link>
-      </SignedIn>
-      <SignedOut>
-        <Heart className="w-5 h-5 cursor-pointer" />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-      <SignedOut>
-        <SignInButton mode="modal">
-          <User className="w-5 h-5 cursor-pointer" />
-        </SignInButton>
-      </SignedOut>
+        <Button
+          onClick={() => {
+            if (!isVerified) {
+              alert("Your account is not verified. Please wait for your account to be verified");
+              return;
+            }
+            setShowModal(true);
+          }}
+          className="bg-blue-600 text-white w-full mt-2"
+        >
+          Add Listing
+        </Button>
+
+        <div className="flex gap-4 mt-2">
+          <Flag className="w-5 h-5 cursor-pointer" />
+          <SignedIn>
+            <Link href="/dashboard">
+              <LayoutDashboard className="w-5 h-5 cursor-pointer" />
+            </Link>
+          </SignedIn>
+          <SignedOut>
+            <Heart className="w-5 h-5 cursor-pointer" />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <User className="w-5 h-5 cursor-pointer" />
+            </SignInButton>
+          </SignedOut>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </>
+)}
+
 
       </div>
 
