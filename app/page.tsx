@@ -119,7 +119,7 @@ export default function Hero() {
             <div className="p-2 rounded-full">
               <Image src="/logo.png" alt="Logo" width={60} height={24} />
             </div>
-            <span className="font-bold text-lg text-white">Cmr Homes</span>
+            <span className="font-bold text-lg text-white">Brisko</span>
           </div>
 
           {/* Mobile Menu Button */}
