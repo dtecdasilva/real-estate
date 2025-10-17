@@ -59,7 +59,7 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube, FaTiktok 
         {/* Bottom Bar */}
         <div className="border-t border-gray-500 mt-10 pt-6 px-4 text-sm flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
           <p className="text-gray-300 mb-4 md:mb-0 text-center md:text-left">
-            Copyright © 2022. HomePress – Real Estate WordPress Theme by StylemixThemes.
+            Copyright © 2025. Shelter Space
           </p>
   
           {/* Social Icons */}
