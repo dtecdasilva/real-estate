@@ -238,7 +238,7 @@ export default function Hero() {
 
 
       {/* Hero Content */}
-      <div className="relative z-10 flex flex-col justify-center h-full px-8 md:px-45 max-w-5xl -mt-20 md:mt-[-5rem]">
+      <div className="relative z-0 flex flex-col justify-center h-full px-8 md:px-45 max-w-5xl -mt-20 md:mt-[-5rem]">
         <p className="text-lg md:text-xl py-1">Your trusted partner in real estate.</p>
         <h1 className="text-4xl md:text-6xl font-extrabold mt-4 leading-tight py-3">
           Find Your <span className="text-blue-500">Perfect</span> Home or Investment
