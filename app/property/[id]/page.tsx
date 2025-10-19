@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react";
@@ -10,6 +9,7 @@ import { Calendar, X, Video, Phone } from "lucide-react";
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 type Listing = {
   id?: string;
@@ -24,6 +24,7 @@ type Listing = {
   file2?: string;
   file3?: string;
   video?: string;
+  availability: string;
 };
 
 const ListingPage = () => {
@@ -65,22 +66,9 @@ const images = [listing?.file, listing?.file2, listing?.file3]
     fetchListing();
   }, [id]);
 
-  // Open modal
-  const handleReserveClick = () => {
-    setIsOpen(true);
-  };
-
-  // Close modal via Dialog
-  const handleDialogClose = () => {
-    setIsOpen(false);
-    resetForm();
-  };
-
-  // Close modal via button
-  const handleCloseButton = () => {
-    setIsOpen(false);
-    resetForm();
-  };
+  const handleDialogClose = () => setIsOpen(false);
+  const handleReserveProperty = () => setIsOpen(true);
+  const handleCloseButton = () => setIsOpen(false);
 
   const resetForm = () => {
     setFormData({
@@ -90,6 +78,34 @@ const images = [listing?.file, listing?.file2, listing?.file3]
     });
   };
 
+  
+
+  const handleReserveSubmit = async () => {
+    if (!listing?.id) return;
+  
+    if (!formData.fullName || !formData.phoneNumber) {
+      alert("Please enter your full name and phone number.");
+      return;
+    }
+  
+    try {
+      // Update Firestore
+      const docRef = doc(db, "listings", listing.id);
+      await updateDoc(docRef, { availability: "reserved" });
+  
+      // Update local state
+      setListing({ ...listing, availability: "reserved" });
+  
+      alert(`Thank you ${formData.fullName}, property reserved successfully!`);
+      setIsOpen(false);
+      resetForm();
+    } catch (error) {
+      console.error("Error reserving property:", error);
+      alert("Failed to reserve property. Please try again.");
+    }
+  };
+
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -97,34 +113,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
     });
   };
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch("/api/flutterwave/redirect", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: Number(formData.amount),
-          currency: "XAF",
-          payment_type: "mobilemoney",
-          phone_number: `237${formData.phoneNumber}`,
-          tx_ref: `tx-${Date.now()}`,
-          full_name: formData.fullName,
-          redirect_url: "https://cardealsmarket.com",
-        }),
-      });
-
-      const result = await response.json();
-      console.log("Payment response:", result);
-
-      if (result?.data?.link) {
-        window.location.href = result.data.link;
-      }
-    } catch (error) {
-      console.error("Payment error:", error);
-    }
-  };
+  
 
   if (!listing) return <div className="p-8 text-center">Loading...</div>;
 
@@ -145,12 +134,13 @@ const images = [listing?.file, listing?.file2, listing?.file3]
   <div className="mt-4 md:mt-0 flex flex-wrap gap-3">
     {/* Reserve Button */}
     <Button
-      onClick={handleReserveClick}
+      onClick={handleReserveProperty}
       className="bg-blue-600 text-white hover:bg-white hover:text-black px-6 py-3 flex items-center gap-2 text-sm"
     >
       <Calendar size={18} />
       Reserve Now
     </Button>
+
 
     {/* Video Button */}
     <Button
@@ -255,13 +245,14 @@ const images = [listing?.file, listing?.file2, listing?.file3]
             </div>
 
             <div className="mt-4 md:mt-0 flex flex-wrap gap-3">
-              <Button
-                onClick={handleReserveClick}
-                className="bg-blue-600 text-white hover:bg-white hover:text-black px-8 py-4 flex items-center gap-2"
-              >
-                <Calendar size={18} />
-                Reserve Now
-              </Button>
+            <Button
+              onClick={handleReserveProperty}
+              className="bg-blue-600 text-white hover:bg-white hover:text-black px-6 py-3 flex items-center gap-2 text-sm"
+            >
+              <Calendar size={18} />
+              Reserve Now
+            </Button>
+
 
               {/* Video Button */}
               <Button
@@ -320,72 +311,23 @@ const images = [listing?.file, listing?.file2, listing?.file3]
               <X size={20} />
             </button>
             <Dialog.Title className="text-lg font-bold mb-4">Reserve Property</Dialog.Title>
-                  <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-        className="space-y-4"
-      >
-        {/* Full Name */}
-        <div>
-          <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
-          </label>
-          <input
-            id="fullName"
-            name="fullName"
-            type="text"
-            placeholder="John Doe"
-            value={formData.fullName}
-            onChange={handleInputChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* Phone Number */}
-        <div>
-          <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
-            Phone Number (no +237)
-          </label>
-          <input
-            id="phoneNumber"
-            name="phoneNumber"
-            type="tel"
-            placeholder="6xxxxxxxx"
-            value={formData.phoneNumber}
-            onChange={handleInputChange}
-            required
-            pattern="[6-9]{1}[0-9]{8}"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="ex: john@gmail.com"
-            value={formData.amount}
-            onChange={handleInputChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <Button
-          type="submit"
-          className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2 px-4 rounded-lg"
-        >
-          Submit
-        </Button>
-      </form>
+            <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleReserveSubmit();; // currently Flutterwave payment
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <label>Full Name</label>
+              <input name="fullName" value={formData.fullName} onChange={handleInputChange} required />
+            </div>
+            <div>
+              <label>Phone Number</label>
+              <input name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} required />
+            </div>
+            <Button type="submit">Reserve Now</Button>
+          </form>
 
           </Dialog.Panel>
         </div>
