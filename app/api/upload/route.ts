@@ -2,6 +2,8 @@ import { writeFile } from 'fs/promises';
 import { NextRequest, NextResponse } from 'next/server';
 import { join } from 'path';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const data = await request.formData();
