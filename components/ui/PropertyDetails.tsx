@@ -89,7 +89,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   const types = Array.from(new Set(listings.map((l) => l.type)));
 
   // Categories for rent and buy
-  const RENT_TYPES = ["chambre moderne", "studio", "apartment", "guest house"];
+  const RENT_TYPES = ["chambre moderne", "studio", "apartment", "guest-house"];
   const BUY_TYPES = ["land", "for sale - house"];
 
   // Filter listings
