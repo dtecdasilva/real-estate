@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CldUploadWidget, CldImage } from 'next-cloudinary';
+import { CldUploadWidget, CldImage, type CloudinaryUploadWidgetInfo } from 'next-cloudinary';
 
 export default function UploadForm({ onUpload }: { onUpload: (url: string) => void }) {
   const [uploadedUrl, setUploadedUrl] = useState('');
@@ -11,16 +11,16 @@ export default function UploadForm({ onUpload }: { onUpload: (url: string) => vo
     <div className="space-y-3">
       <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
-        onUpload={(result: any) => {
-          if (result.event === 'success') {
-            const url = result.info.secure_url;
-            setUploadedUrl(url);
-            onUpload(url);
-            setUploading(false);
-          } else if (result.event === 'upload') {
-            setUploading(true);
+        onSuccess={(result) => {
+          const info = result?.info as CloudinaryUploadWidgetInfo;
+          if (info?.secure_url) {
+            setUploadedUrl(info.secure_url);
+            onUpload(info.secure_url);
           }
+          setUploading(false);
         }}
+        onQueuesStart={() => setUploading(true)}
+        onQueuesEnd={() => setUploading(false)}
       >
         {({ open }) => (
           <button
