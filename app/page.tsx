@@ -378,6 +378,8 @@ export default function Hero() {
       />
       
       <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
+      <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
+      <UploadForm onUpload={(url) => setUploadedImageUrl3(url)} />
 
       <textarea
         placeholder="Video Link"
