@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react";
 import { Calendar, X, Video, Phone } from "lucide-react";
 import Image from "next/image";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 type Listing = {
   id?: string;
@@ -37,6 +39,13 @@ const ListingPage = () => {
 
   const handleVideoOpen = () => setIsVideoOpen(true);
   const handleVideoClose = () => setIsVideoOpen(false);
+
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const images = [listing?.file, listing?.file2, listing?.file3]
+  .filter((url): url is string => Boolean(url)) // remove undefined
+  .map((url) => ({ src: url })); // convert string to { src: string }
 
   // Fetch the listing details
   useEffect(() => {
@@ -170,33 +179,50 @@ const ListingPage = () => {
 
         {/* Images */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2">
-            <Image
-              src={listing.file}
-              alt="Main"
-              width={800}
-              height={500}
-              className="w-full h-[400px] object-cover rounded-xl shadow"
-            />
-          </div>
-          <div className="grid grid-rows-2 gap-2 h-[400px]">
-              <Image
-                src={listing.file2 || "/placeholder.jpg"}
-                alt="Gallery 2"
-                width={400}
-                height={200}
-                className="w-full h-full object-cover rounded-xl shadow"
-              />
-            <Image
-              src={listing.file3 || "/placeholder.jpg"}
-              alt="Gallery 3"
-              width={400}
-              height={200}
-              className="w-full h-full object-cover rounded-xl shadow"
-            />
-          </div>
-        </div>
+  <div
+    className="md:col-span-2 cursor-pointer"
+    onClick={() => { setLightboxOpen(true); setLightboxIndex(0); }}
+  >
+    <Image
+      src={listing.file}
+      alt="Main"
+      width={800}
+      height={500}
+      className="w-full h-[400px] object-cover rounded-xl shadow"
+    />
+  </div>
 
+  <div className="grid grid-rows-2 gap-2 h-[400px]">
+    {listing.file2 && (
+      <div
+        className="cursor-pointer"
+        onClick={() => { setLightboxOpen(true); setLightboxIndex(1); }}
+      >
+        <Image
+          src={listing.file2}
+          alt="Gallery 2"
+          width={400}
+          height={200}
+          className="w-full h-full object-cover rounded-xl shadow"
+        />
+      </div>
+    )}
+    {listing.file3 && (
+      <div
+        className="cursor-pointer"
+        onClick={() => { setLightboxOpen(true); setLightboxIndex(2); }}
+      >
+        <Image
+          src={listing.file3}
+          alt="Gallery 3"
+          width={400}
+          height={200}
+          className="w-full h-full object-cover rounded-xl shadow"
+        />
+      </div>
+    )}
+  </div>
+</div>
         {/* Property Details */}
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
@@ -273,7 +299,15 @@ const ListingPage = () => {
           </div>
         </div>
       </div>
-
+      
+      {lightboxOpen && (
+          <Lightbox
+          open={lightboxOpen}
+          index={lightboxIndex}
+          close={() => setLightboxOpen(false)}
+          slides={images}
+        />
+      )}
       {/* Modal */}
       <Dialog open={isOpen} onClose={handleDialogClose} className="fixed z-50 inset-0 overflow-y-auto">
         <div className="flex items-center justify-center min-h-screen p-4 bg-black bg-opacity-50">
