@@ -1,29 +1,23 @@
-import { writeFile } from 'fs/promises';
-import { NextRequest, NextResponse } from 'next/server';
-import { join } from 'path';
+import { v2 as cloudinary } from "cloudinary";
+import { NextResponse } from "next/server";
 
-export const runtime = 'nodejs';
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-export async function POST(request: NextRequest) {
-  try {
-    const data = await request.formData();
-    const file: File | null = data.get('file') as unknown as File;
+export async function POST() {
+  const timestamp = Math.round(new Date().getTime() / 1000);
+  const signature = cloudinary.utils.api_sign_request(
+    { timestamp },
+    process.env.CLOUDINARY_API_SECRET!
+  );
 
-    if (!file) {
-      return NextResponse.json({ success: false, message: 'No file uploaded' });
-    }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const path = join(process.cwd(), 'public', 'tmp', file.name);
-    await writeFile(path, buffer);
-    console.log(`✅ Saved file to ${path}`);
-
-    return NextResponse.json({ success: true, path: `/tmp/${file.name}` });
-
-  } catch (err) {
-    console.error('API upload error:', err);
-    return NextResponse.json({ success: false, message: 'Upload failed' });
-  }
+  return NextResponse.json({
+    timestamp,
+    signature,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  });
 }
