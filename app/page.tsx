@@ -378,22 +378,6 @@ export default function Hero() {
       />
       
       <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
-      {uploadedImageUrl && (
-        <div>
-          <p>Uploaded Image URL:</p>
-          <a href={uploadedImageUrl} target="_blank" rel="noopener noreferrer">
-            {uploadedImageUrl}
-          </a>
-
-          <Image
-            src={uploadedImageUrl}
-            alt="Uploaded"
-            className="mt-2 w-48 h-48 object-cover rounded shadow-md"
-          />
-        </div>
-      )}
-      <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
-      <UploadForm onUpload={(url) => setUploadedImageUrl3(url)} />
 
       <textarea
         placeholder="Video Link"
