@@ -3,18 +3,21 @@ import { doc, deleteDoc } from "firebase/firestore";
 
 export async function DELETE(
   req: Request,
-  context: any // 👈 fixes the typing issue
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = context.params.id;
+    const { id } = await context.params; // ✅ await params because it's async in Next.js 15+
     await deleteDoc(doc(db, "listings", id));
-    return new Response(JSON.stringify({ message: "Listing deleted successfully" }), {
-      status: 200,
-    });
+
+    return new Response(
+      JSON.stringify({ message: "Listing deleted successfully" }),
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error deleting listing:", error);
-    return new Response(JSON.stringify({ error: "Failed to delete listing" }), {
-      status: 500,
-    });
+    return new Response(
+      JSON.stringify({ error: "Failed to delete listing" }),
+      { status: 500 }
+    );
   }
 }
