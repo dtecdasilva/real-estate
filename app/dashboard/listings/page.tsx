@@ -7,8 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
-
-
 interface Listing {
   id: string;
   title: string;
@@ -40,21 +38,20 @@ export default function ListingsPage() {
   const userEmail = user?.emailAddresses[0]?.emailAddress;
   const [expandedListings, setExpandedListings] = useState<string[]>([]);
 
-    const toggleDescription = (id: string) => {
+  const toggleDescription = (id: string) => {
     setExpandedListings(prev =>
-        prev.includes(id)
-        ? prev.filter(x => x !== id) // collapse
-        : [...prev, id] // expand
+      prev.includes(id)
+        ? prev.filter(x => x !== id)
+        : [...prev, id]
     );
-    };
-  
+  };
+
   useEffect(() => {
     async function fetchListings() {
       try {
         const res = await fetch("/api/get-listings");
         const data = await res.json();
         if (Array.isArray(data)) {
-          // Filter listings for logged-in user
           const userListings = data.filter((l: Listing) => l.email === userEmail);
           setListings(userListings);
           setFilteredListings(userListings);
@@ -63,11 +60,9 @@ export default function ListingsPage() {
         console.error("Failed to fetch listings:", err);
       }
     }
-  
-    if (userEmail) fetchListings(); // only fetch once email is available
+
+    if (userEmail) fetchListings();
   }, [userEmail]);
-  
-  
 
   useEffect(() => {
     const filtered = listings.filter((l) =>
@@ -131,16 +126,19 @@ export default function ListingsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-muted">
+    <div className="flex flex-col md:flex-row min-h-screen bg-muted">
       <AgentSidebar />
-      <main className="flex-1 px-6 py-10 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">All Listings</h1>
-          <Button variant="outline" onClick={exportCSV}>
+
+      <main className="flex-1 px-4 md:px-6 py-6 md:py-10 space-y-6">
+        {/* Top Bar */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold">All Listings</h1>
+          <Button variant="outline" onClick={exportCSV} className="w-full md:w-auto">
             Export CSV
           </Button>
         </div>
 
+        {/* Search Bar */}
         <input
           type="text"
           placeholder="Search by title, address or city..."
@@ -149,100 +147,82 @@ export default function ListingsPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <div className="overflow-auto rounded-lg shadow bg-white">
+        {/* Table Section */}
+        <div className="overflow-x-auto rounded-lg shadow bg-white">
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-100 border-b text-xs font-semibold text-gray-700 uppercase">
               <tr>
                 <th className="px-4 py-3">Title</th>
                 <th className="px-4 py-3">Price</th>
                 <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Address</th>
                 <th className="px-4 py-3">City</th>
-                <th className="px-4 py-3">Months</th>
                 <th className="px-4 py-3">Availability</th>
                 <th className="px-4 py-3">Description</th>
-                <th className="px-4 py-3">File 1</th>
-                <th className="px-4 py-3">File 2</th>
-                <th className="px-4 py-3">File 3</th>
-                <th className="px-4 py-3">Video</th>
-                <th className="px-4 py-3">Created At</th>
-                <th className="px-4 py-3">Actions</th>
+                <th className="px-4 py-3">Files</th>
+                <th className="px-4 py-3">Created</th>
+                <th className="px-4 py-3">Action</th>
               </tr>
             </thead>
             <tbody>
               {paginatedListings.map((l) => (
                 <tr key={l.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">{l.title}</td>
+                  <td className="px-4 py-3 font-medium truncate max-w-[120px]">{l.title}</td>
                   <td className="px-4 py-3">FCFA {l.price}</td>
                   <td className="px-4 py-3">{l.type}</td>
-                  <td className="px-4 py-3">{l.address}</td>
                   <td className="px-4 py-3">{l.city}</td>
-                  <td className="px-4 py-3">{l.months}</td>
                   <td className="px-4 py-3">
                     <Badge variant={l.availability ? "secondary" : "destructive"}>
-                        {l.availability || "N/A"}
+                      {l.availability || "N/A"}
                     </Badge>
-                    </td>
-                  <td className="px-4 py-3 max-w-xs">
-                    <div className="relative">
-                    <p>
-                        {expandedListings.includes(l.id) || (l.description?.length ?? 0) <= 100
-                            ? l.description
-                            : l.description?.slice(0, 100) + "..."}
-                        </p>
-                        {(l.description?.length ?? 0) > 100 && (
-                        <button
-                            className="text-blue-600 text-xs mt-1"
-                            onClick={() => toggleDescription(l.id)}
-                        >
-                            {expandedListings.includes(l.id) ? "Show Less" : "Show More"}
-                        </button>
-                        )}
-                    </div>
-                    </td>
-                  {[l.file, l.file2, l.file3].map((file, idx) => (
-                    <td key={idx} className="px-4 py-3">
+                  </td>
+                  <td className="px-4 py-3 max-w-[200px]">
+                    {expandedListings.includes(l.id) || (l.description?.length ?? 0) <= 100
+                      ? l.description
+                      : l.description?.slice(0, 100) + "..."}
+                    {(l.description?.length ?? 0) > 100 && (
+                      <button
+                        className="text-blue-600 text-xs mt-1"
+                        onClick={() => toggleDescription(l.id)}
+                      >
+                        {expandedListings.includes(l.id) ? "Show Less" : "Show More"}
+                      </button>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 flex gap-1">
+                    {[l.file, l.file2, l.file3].map((file, idx) => (
                       <Image
-                        src={file || "/placeholder.png"} // optional fallback
+                        key={idx}
+                        src={file || "/placeholder.png"}
                         alt={`File ${idx + 1}`}
-                        width={50}
-                        height={50}
+                        width={40}
+                        height={40}
                         className="rounded border shadow cursor-pointer"
                         onClick={() => setSelectedImage(file)}
                       />
-                    </td>
-                  ))}
-                  <td className="px-4 py-3">
-                    <a
-                      href={l.video}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline"
-                    >
-                      Video
-                    </a>
+                    ))}
                   </td>
-                  <td className="px-4 py-3">{new Date(l.createdAt).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-xs">{new Date(l.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
                     <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
                         setEditingListing(l);
                         setFormData(l);
-                        }}
+                      }}
                     >
-                        Edit
+                      Edit
                     </Button>
-                    </td>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
+        {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-4">
+          <div className="flex flex-wrap justify-center items-center gap-2 mt-4">
             <Button
               variant="outline"
               size="sm"
@@ -265,7 +245,7 @@ export default function ListingsPage() {
           </div>
         )}
 
-        {/* Fullscreen image modal */}
+        {/* Image Preview */}
         {selectedImage && (
           <div
             className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center"
@@ -287,83 +267,79 @@ export default function ListingsPage() {
             </button>
           </div>
         )}
-       {editingListing && (
-  <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-    <div className="bg-white p-6 rounded-lg w-full max-w-xl relative">
-      <h2 className="text-xl font-bold mb-4">Edit Listing</h2>
 
-      <div className="space-y-2 max-h-[70vh] overflow-auto">
-        {[
-          "title",
-          "price",
-          "type",
-          "address",
-          "city",
-          "months",
-          "availability",
-          "description",
-          "file",
-          "file2",
-          "file3",
-          "video",
-        ].map((field) => (
-          <div key={field} className="flex flex-col">
-            <label className="font-medium">{field}</label>
-            <input
-              type={field === "price" ? "number" : "text"}
-              value={formData[field as keyof Listing] || ""}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  [field]: field === "price" ? Number(e.target.value) : e.target.value,
-                }))
-              }
-              className="p-2 border rounded"
-            />
+        {/* Edit Modal */}
+        {editingListing && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-4">
+            <div className="bg-white p-6 rounded-lg w-full max-w-xl relative max-h-[90vh] overflow-auto">
+              <h2 className="text-xl font-bold mb-4">Edit Listing</h2>
+
+              <div className="space-y-2">
+                {[
+                  "title",
+                  "price",
+                  "type",
+                  "address",
+                  "city",
+                  "months",
+                  "availability",
+                  "description",
+                  "file",
+                  "file2",
+                  "file3",
+                  "video",
+                ].map((field) => (
+                  <div key={field} className="flex flex-col">
+                    <label className="font-medium capitalize">{field}</label>
+                    <input
+                      type={field === "price" ? "number" : "text"}
+                      value={formData[field as keyof Listing] || ""}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          [field]: field === "price" ? Number(e.target.value) : e.target.value,
+                        }))
+                      }
+                      className="p-2 border rounded"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+                <Button variant="ghost" onClick={() => setEditingListing(null)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(`/api/update-listing/${editingListing.id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(formData),
+                      });
+
+                      if (!res.ok) throw new Error("Failed to update listing");
+                      const updated = await res.json();
+                      setListings((prev) =>
+                        prev.map((l) => (l.id === updated.id ? updated : l))
+                      );
+                      setFilteredListings((prev) =>
+                        prev.map((l) => (l.id === updated.id ? updated : l))
+                      );
+                      setEditingListing(null);
+                    } catch (err) {
+                      console.error(err);
+                      alert("Failed to update listing.");
+                    }
+                  }}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-
-      <div className="flex justify-end gap-2 mt-4">
-        <Button variant="ghost" onClick={() => setEditingListing(null)}>
-          Cancel
-        </Button>
-        <Button
-          onClick={async () => {
-            // <-- Place your try/catch block here
-            try {
-              const res = await fetch(`/api/update-listing/${editingListing.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-              });
-
-              if (!res.ok) {
-                const text = await res.text();
-                console.error("Failed response:", text);
-                throw new Error("Failed to update listing");
-              }
-
-              const updated = await res.json();
-              setListings((prev) =>
-                prev.map((l) => (l.id === updated.id ? updated : l))
-              );
-              setFilteredListings((prev) =>
-                prev.map((l) => (l.id === updated.id ? updated : l))
-              );
-              setEditingListing(null);
-            } catch (err) {
-              console.error(err);
-              alert("Failed to update listing. See console for details.");
-            }
-          }}
-        >
-          Save
-        </Button>
-      </div>
-    </div>
-  </div>
-)}
+        )}
       </main>
     </div>
   );
