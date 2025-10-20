@@ -2,13 +2,9 @@ import { db } from "@/lib/firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
-interface RouteParams {
-  params: { id: string };
-}
-
 export async function DELETE(
-  _request: Request,
-  context: RouteParams
+  request: Request,
+  context: { params: { id: string } }
 ) {
   try {
     const { id } = context.params;
