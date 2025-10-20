@@ -203,6 +203,7 @@ export default function ListingsPage() {
                   </td>
                   <td className="px-4 py-3 text-xs">{new Date(l.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
+                  <div className="flex gap-2">
                     <Button
                       size="sm"
                       variant="outline"
@@ -213,6 +214,30 @@ export default function ListingsPage() {
                     >
                       Edit
                     </Button>
+
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={async () => {
+                        if (confirm("Are you sure you want to delete this listing?")) {
+                          try {
+                            const res = await fetch(`/api/delete-listing/${l.id}`, {
+                              method: "DELETE",
+                            });
+                            if (!res.ok) throw new Error("Failed to delete listing");
+                            setListings((prev) => prev.filter((item) => item.id !== l.id));
+                            setFilteredListings((prev) => prev.filter((item) => item.id !== l.id));
+                          } catch (err) {
+                            console.error(err);
+                            alert("Error deleting listing. See console for details.");
+                          }
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+
                   </td>
                 </tr>
               ))}
