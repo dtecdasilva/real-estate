@@ -35,7 +35,6 @@ export default function AdminsPage() {
         const res = await fetch("/api/get-users");
         const data = await res.json();
         if (Array.isArray(data)) {
-          // Filter out admins, only keep agents
           const agentsOnly = data.filter((user: FirebaseUser) => user.role !== "admin");
           setUsers(agentsOnly);
           setFilteredUsers(agentsOnly);
@@ -44,15 +43,12 @@ export default function AdminsPage() {
         console.error("Failed to fetch users:", err);
       }
     }
-  
     fetchUsers();
   }, []);
-  
+
   useEffect(() => {
     const filtered = users.filter((u) =>
-      `${u.firstName} ${u.lastName} ${u.email}`
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      `${u.firstName} ${u.lastName} ${u.email}`.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredUsers(filtered);
     setCurrentPage(1);
@@ -61,16 +57,15 @@ export default function AdminsPage() {
   const handleVerify = async (userId: string) => {
     setLoading(true);
     try {
-      const userRef = doc(db, "users", userId); // ✅ use the argument
+      const userRef = doc(db, "users", userId);
       await updateDoc(userRef, { verified: true });
       alert("User verified ✅");
     } catch (error) {
       console.error("Error verifying user: ", error);
     } finally {
-      setLoading(false); // optional: reset loading
+      setLoading(false);
     }
   };
-  
 
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const paginatedUsers = filteredUsers.slice(
@@ -79,13 +74,7 @@ export default function AdminsPage() {
   );
 
   const exportCSV = () => {
-    const headers = [
-      "Full Name",
-      "Email",
-      "Role",
-      "Submitted",
-      "Verified",
-    ];
+    const headers = ["Full Name", "Email", "Role", "Submitted", "Verified"];
     const rows = filteredUsers.map((u) => [
       `${u.firstName} ${u.lastName}`,
       u.email,
@@ -94,8 +83,7 @@ export default function AdminsPage() {
       u.verified ? "Yes" : "No",
     ]);
     const csvContent =
-      "data:text/csv;charset=utf-8," +
-      [headers, ...rows].map((e) => e.join(",")).join("\n");
+      "data:text/csv;charset=utf-8," + [headers, ...rows].map((e) => e.join(",")).join("\n");
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -107,12 +95,17 @@ export default function AdminsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-muted">
-      <AgentSidebar />
-      <main className="flex-1 px-6 py-10 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Admins & Agents</h1>
-          <Button variant="outline" onClick={exportCSV}>
+    <div className="flex flex-col md:flex-row min-h-screen bg-muted">
+      {/* Sidebar */}
+      <div className="md:w-64 w-full">
+        <AgentSidebar />
+      </div>
+
+      {/* Main content */}
+      <main className="flex-1 px-4 md:px-6 py-8 space-y-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold">Admins & Agents</h1>
+          <Button variant="outline" onClick={exportCSV} className="w-full md:w-auto">
             Export CSV
           </Button>
         </div>
@@ -120,14 +113,14 @@ export default function AdminsPage() {
         <input
           type="text"
           placeholder="Search by name or email..."
-          className="w-full md:w-1/2 p-2 border rounded-lg"
+          className="w-full p-2 border rounded-lg text-sm md:text-base"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <div className="overflow-auto rounded-lg shadow bg-white">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-gray-100 border-b text-xs font-semibold text-gray-700 uppercase">
+        <div className="overflow-x-auto bg-white rounded-lg shadow">
+          <table className="min-w-full text-sm md:text-base text-left">
+            <thead className="bg-gray-100 border-b text-xs md:text-sm font-semibold text-gray-700 uppercase">
               <tr>
                 <th className="px-4 py-3">Full Name</th>
                 <th className="px-4 py-3">Email</th>
@@ -142,30 +135,20 @@ export default function AdminsPage() {
             <tbody>
               {paginatedUsers.map((user) => (
                 <tr key={user.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">
+                  <td className="px-4 py-3 font-medium whitespace-nowrap">
                     {user.firstName} {user.lastName}
                   </td>
-                  <td className="px-4 py-3">{user.email}</td> 
+                  <td className="px-4 py-3 whitespace-nowrap">{user.email}</td>
                   <td className="px-4 py-3">
-                    <Badge
-                      variant={
-                        user.role === "admin" ? "destructive" : "secondary"
-                      }
-                    >
+                    <Badge variant={user.role === "admin" ? "destructive" : "secondary"}>
                       {user.role}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     {new Date(user.submittedAt).toLocaleString()}
                   </td>
                   <td className="px-4 py-3">
-                    <span
-                      className={
-                        user.verified
-                          ? "text-green-600 font-medium"
-                          : "text-yellow-600"
-                      }
-                    >
+                    <span className={user.verified ? "text-green-600 font-medium" : "text-yellow-600"}>
                       {user.verified ? "Yes" : "No"}
                     </span>
                   </td>
@@ -173,8 +156,8 @@ export default function AdminsPage() {
                     <Image
                       src={user.profileImage}
                       alt="Profile"
-                      width={50}
-                      height={50}
+                      width={40}
+                      height={40}
                       className="rounded border shadow cursor-pointer"
                       onClick={() => setSelectedImage(user.profileImage)}
                     />
@@ -183,8 +166,8 @@ export default function AdminsPage() {
                     <Image
                       src={user.idDocumentImage}
                       alt="ID"
-                      width={50}
-                      height={50}
+                      width={40}
+                      height={40}
                       className="rounded border shadow cursor-pointer"
                       onClick={() => setSelectedImage(user.idDocumentImage)}
                     />
@@ -195,6 +178,7 @@ export default function AdminsPage() {
                         onClick={() => handleVerify(user.id)}
                         disabled={loading}
                         size="sm"
+                        className="w-full md:w-auto"
                       >
                         {loading ? "Verifying..." : "Verify"}
                       </Button>
@@ -206,44 +190,45 @@ export default function AdminsPage() {
           </table>
         </div>
 
+        {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              Prev
-            </Button>
-            <span className="text-sm">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-2 mt-4 text-sm">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+            <span className="mt-2 md:mt-0">
               Page {currentPage} of {totalPages}
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                setCurrentPage((p) => Math.min(p + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </Button>
           </div>
         )}
 
-        {/* Fullscreen image modal */}
+        {/* Image Modal */}
         {selectedImage && (
           <div
             className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center"
             onClick={() => setSelectedImage(null)}
           >
-              <Image
-                src={selectedImage}
-                alt="Full View"
-                fill
-                className="object-contain rounded shadow-lg"
-              />
+            <Image
+              src={selectedImage}
+              alt="Full View"
+              fill
+              className="object-contain rounded shadow-lg"
+            />
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 text-white text-3xl font-bold"
