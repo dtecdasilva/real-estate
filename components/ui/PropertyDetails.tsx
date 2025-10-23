@@ -45,6 +45,8 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   const [monthsFilter, setMonthsFilter] = useState("");
   const [textFilter, setTextFilter] = useState("");
   const [cityFilter, setCityFilter] = useState<string>("");
+  const [priceRange, setPriceRange] = useState<string>("");
+
 
   // keep typeFilter in sync with URL changes
   useEffect(() => {
@@ -110,8 +112,12 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           .toLowerCase()
           .includes(textFilter.toLowerCase())
       : true;
-
-    // NEW: match based on ?cat=rent or ?cat=buy
+    const priceMatch = (() => {
+        if (!priceRange) return true;
+        const [min, max] = priceRange.split("-").map(Number);
+        return listing.price >= min && listing.price <= max;
+      })();
+          // NEW: match based on ?cat=rent or ?cat=buy
     const catMatch = catFromQuery
       ? catFromQuery === "rent"
         ? RENT_TYPES.includes(listing.type.toLowerCase())
@@ -120,7 +126,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
         : true
       : true;
 
-    return cityMatch && typeMatch && monthsMatch && textMatch && catMatch;
+    return cityMatch && typeMatch && monthsMatch && textMatch && catMatch && priceMatch;
   });
 
   const clearFilters = () => {
@@ -128,6 +134,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
     setTypeFilter("");
     setMonthsFilter("");
     setTextFilter("");
+    setPriceRange("");
   };
 
   return (
@@ -184,6 +191,21 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
               onChange={(e) => setMonthsFilter(e.target.value)}
               className="border p-2 rounded w-full md:w-64"
             />
+
+            <select
+              value={priceRange}
+              onChange={(e) => setPriceRange(e.target.value)}
+              className="border p-2 rounded w-full md:w-64"
+            >
+              <option value="">All Price Ranges</option>
+              <option value="25000-35000">25k - 35k</option>
+              <option value="35000-50000">35k - 50k</option>
+              <option value="50000-100000">50k - 100k</option>
+              <option value="100000-200000">100k - 200k</option>
+              <option value="200000-500000">200k - 500k</option>
+              <option value="500000-1000000">500k - 1M</option>
+            </select>
+
 
             <button
               onClick={clearFilters}
