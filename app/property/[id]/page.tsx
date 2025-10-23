@@ -76,7 +76,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
-          setAgentPhone(userData.phoneNumber || "");
+          setAgentPhone(userData.whatsapp || ""); 
         } else {
           console.warn("No user found with that email.");
         }
