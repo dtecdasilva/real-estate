@@ -114,8 +114,8 @@ export default function ProfilePage() {
               <div>
                 <label className="text-sm font-medium">WhatsApp Number</label>
                 <Input
-                  type="tel"
-                  placeholder="e.g. +237 6xx xxx xxx"
+                  type="number"
+                  placeholder="e.g. 6xx xxx xxx"
                   value={whatsapp}
                   onChange={(e) => setWhatsapp(e.target.value)}
                 />
