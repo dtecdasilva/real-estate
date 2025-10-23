@@ -34,8 +34,6 @@ export default function ProfilePage() {
         setWhatsapp(data.whatsapp || "");
         setVisitFee(data.visitFee || "");
         setCommissionFee(data.commissionFee || "");
-        setUploadedImageUrl(data.profileImage || "");
-        setUploadedImageUrl2(data.idDocumentImage || "");
       }
     };
   
