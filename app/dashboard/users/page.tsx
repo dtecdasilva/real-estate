@@ -201,7 +201,30 @@ export default function AdminsPage() {
           </table>
         </div>
 
-        {/* Pagination + Image Modal remain unchanged */}
+        {/* Image Modal */}
+          {selectedImage && (
+            <div
+              className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center p-4"
+              onClick={() => setSelectedImage(null)}
+            >
+              <div className="relative max-w-full max-h-full">
+                <Image
+                  src={selectedImage}
+                  alt="Full View"
+                  width={800}       // maximum width
+                  height={800}      // maximum height
+                  className="object-contain rounded shadow-lg"
+                />
+                <button
+                  onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
+                  className="absolute top-2 right-2 text-white text-3xl font-bold"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+          )}
+
       </main>
     </div>
   );
