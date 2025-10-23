@@ -29,6 +29,7 @@ export default function AdminsPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const itemsPerPage = 5;
 
@@ -69,7 +70,7 @@ export default function AdminsPage() {
       setLoading(false);
     }
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
