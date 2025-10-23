@@ -25,6 +25,7 @@ type Listing = {
   file3?: string;
   video?: string;
   availability: string;
+  email?: string; 
 };
 
 const ListingPage = () => {
@@ -37,7 +38,6 @@ const ListingPage = () => {
     amount: "",
   });
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-
   const handleVideoOpen = () => setIsVideoOpen(true);
   const handleVideoClose = () => setIsVideoOpen(false);
 
@@ -65,6 +65,25 @@ const images = [listing?.file, listing?.file2, listing?.file3]
 
     fetchListing();
   }, [id]);
+
+  const [agentPhone, setAgentPhone] = useState("");
+  useEffect(() => {
+    const fetchAgentPhone = async () => {
+      if (!listing?.email) return;
+  
+      try {
+        const userRef = doc(db, "users", listing.email);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setAgentPhone(userSnap.data().phoneNumber || "");
+        }
+      } catch (error) {
+        console.error("Error fetching agent phone:", error);
+      }
+    };
+  
+    fetchAgentPhone();
+  }, [listing?.email]);
 
   const handleDialogClose = () => setIsOpen(false);
   const handleReserveProperty = () => setIsOpen(true);
@@ -154,9 +173,12 @@ const images = [listing?.file, listing?.file2, listing?.file3]
     {/* Contact Agent Button */}
     <Button
       onClick={() => {
-        const phone = "237671543308"; // agent's WhatsApp number
+        if (!agentPhone) {
+          alert("Agent contact not available yet.");
+          return;
+        }
         const message = `Hi, I am from Shelter Space. I need the house "${listing.title}"`;
-        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/${agentPhone}?text=${encodeURIComponent(message)}`;
         window.open(url, "_blank");
       }}
       className="bg-green-600 text-white hover:bg-white hover:text-black px-6 py-3 flex items-center gap-2 text-sm"
@@ -164,6 +186,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
       <Phone size={18} />
       Contact Agent
     </Button>
+
   </div>
 </div>
 
