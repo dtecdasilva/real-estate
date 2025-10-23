@@ -215,7 +215,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 
             <button
               onClick={clearFilters}
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-auto md:w-auto"
+              className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 text-sm flex items-center gap-2"
             >
               Clear Filters
             </button>
