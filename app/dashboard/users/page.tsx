@@ -136,7 +136,7 @@ export default function AdminsPage() {
                 <th className="px-4 py-3">Verified</th>
                 <th className="px-4 py-3">Profile</th>
                 <th className="px-4 py-3">ID Document</th>
-                <th className="px-4 py-3">Action</th>
+                <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
