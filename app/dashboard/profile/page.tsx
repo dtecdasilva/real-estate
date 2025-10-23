@@ -15,6 +15,9 @@ export default function ProfilePage() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
   const [fullName, setFullName] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [visitFee, setVisitFee] = useState('');
+  const [commissionFee, setCommissionFee] = useState('');
 
   const isVerified = user?.emailAddresses[0]?.verification?.status === "verified";
 
@@ -34,6 +37,9 @@ export default function ProfilePage() {
         firstName,
         lastName,
         email: user.emailAddresses[0]?.emailAddress,
+        whatsapp,
+        visitFee,
+        commissionFee,
         role: 'agent',
         profileImage: uploadedImageUrl || user.imageUrl || "",
         idDocumentImage: uploadedImageUrl2 || "",
@@ -62,11 +68,7 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <p><strong>Email:</strong> {user?.emailAddresses[0]?.emailAddress}</p>
-              <p><strong>Email Verified:</strong>{" "}
-                <span className={isVerified ? "text-green-600" : "text-red-600"}>
-                  {isVerified ? "Yes" : "No"}
-                </span>
-              </p>
+              
               {!isVerified && (
                 <Button
                   onClick={() =>
@@ -79,7 +81,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Upload Section */}
+          {/* Upload & Details Section */}
           <Card>
             <CardHeader>
               <CardTitle>Upload for Verification</CardTitle>
@@ -96,16 +98,48 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Upload Profile Photo</label>
+                <label className="text-sm font-medium">WhatsApp Number</label>
+                <Input
+                  type="tel"
+                  placeholder="e.g. +237 6xx xxx xxx"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Visit Fee (FCFA)</label>
+                <Input
+                  type="number"
+                  placeholder="e.g. 2000"
+                  value={visitFee}
+                  onChange={(e) => setVisitFee(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Commission Fee (%)</label>
+                <Input
+                  type="number"
+                  placeholder="e.g. 10"
+                  value={commissionFee}
+                  onChange={(e) => setCommissionFee(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Upload your Photo</label>
                 <UploadForm onUpload={(url) => setUploadedImageUrl(url)} /> 
               </div>
 
               <div>
-                <label className="text-sm font-medium">Upload ID Document</label>
+                <label className="text-sm font-medium">Upload ID Card Document</label>
                 <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
               </div>
 
-              <Button onClick={handleNameSubmit} className="w-full">Submit for Verification</Button>
+              <Button onClick={handleNameSubmit} className="w-full">
+                Submit for Verification
+              </Button>
             </CardContent>
           </Card>
         </div>
