@@ -153,7 +153,7 @@ export default function AdminsPage() {
                     </Badge>
                   </td>
                   <td className="px-4 py-3">{user.whatsapp || "-"}</td>
-                  <td className="px-4 py-3">{user.commissionFee || "-"}</td>
+                  <td className="px-4 py-3">{user.commissionFee || "-"}%</td>
                   <td className="px-4 py-3">{user.visitFee || "-"}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     {new Date(user.submittedAt).toLocaleString()}

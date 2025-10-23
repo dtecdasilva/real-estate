@@ -12,14 +12,13 @@ import { db } from "@/lib/firebase";
 
 export default function ProfilePage() {
   const { user } = useUser();
+  const isVerified = user?.emailAddresses[0]?.verification?.status === "verified";
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
   const [fullName, setFullName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [visitFee, setVisitFee] = useState('');
   const [commissionFee, setCommissionFee] = useState('');
-
-  const isVerified = user?.emailAddresses[0]?.verification?.status === "verified";
 
   useEffect(() => {
     if (user) {
@@ -84,7 +83,7 @@ export default function ProfilePage() {
           {/* Upload & Details Section */}
           <Card>
             <CardHeader>
-              <CardTitle>Upload for Verification</CardTitle>
+            <CardTitle>{isVerified ? "Edit Details" : "Upload for Verification"}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -127,18 +126,22 @@ export default function ProfilePage() {
                 />
               </div>
 
-              <div>
-                <label className="text-sm font-medium">Upload your Photo</label>
-                <UploadForm onUpload={(url) => setUploadedImageUrl(url)} /> 
-              </div>
+              {!isVerified && (
+                <>
+                  <div>
+                    <label className="text-sm font-medium">Upload your Photo</label>
+                    <UploadForm onUpload={(url) => setUploadedImageUrl(url)} /> 
+                  </div>
 
-              <div>
-                <label className="text-sm font-medium">Upload ID Card Document</label>
-                <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
-              </div>
+                  <div>
+                    <label className="text-sm font-medium">Upload ID Card Document</label>
+                    <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
+                  </div>
+                </>
+              )}
 
               <Button onClick={handleNameSubmit} className="w-full">
-                Submit for Verification
+                {isVerified ? "Save Changes" : "Submit for Verification"}
               </Button>
             </CardContent>
           </Card>
