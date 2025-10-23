@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AgentSidebar from "@/components/ui/agent-sidebar";
 import UploadForm from "@/components/ui/UploadForm";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default function ProfilePage() {
@@ -21,10 +21,27 @@ export default function ProfilePage() {
   const [commissionFee, setCommissionFee] = useState('');
 
   useEffect(() => {
-    if (user) {
+    const fetchUserData = async () => {
+      if (!user) return;
+  
       setFullName(`${user.firstName || ""} ${user.lastName || ""}`);
-    }
+  
+      const docRef = doc(db, "users", user.id);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setWhatsapp(data.whatsapp || "");
+        setVisitFee(data.visitFee || "");
+        setCommissionFee(data.commissionFee || "");
+        setUploadedImageUrl(data.profileImage || "");
+        setUploadedImageUrl2(data.idDocumentImage || "");
+      }
+    };
+  
+    fetchUserData();
   }, [user]);
+  
 
   const handleNameSubmit = async () => {
     if (!user) return;
