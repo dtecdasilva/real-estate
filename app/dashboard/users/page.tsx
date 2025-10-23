@@ -127,12 +127,12 @@ export default function AdminsPage() {
           <table className="min-w-full text-sm md:text-base text-left">
             <thead className="bg-gray-100 border-b text-xs md:text-sm font-semibold text-gray-700 uppercase">
               <tr>
-                <th className="px-4 py-3">Full Name</th>
+                <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Role</th>
                 <th className="px-4 py-3">WhatsApp</th>
-                <th className="px-4 py-3">Commission Fee</th>
-                <th className="px-4 py-3">Visit Fee</th>
+                <th className="px-4 py-3">Commission</th>
+                <th className="px-4 py-3">Visit</th>
                 <th className="px-4 py-3">Submitted</th>
                 <th className="px-4 py-3">Verified</th>
                 <th className="px-4 py-3">Profile</th>
