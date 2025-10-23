@@ -9,7 +9,7 @@ import { Calendar, X, Video, Phone } from "lucide-react";
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, query, where, getDocs} from "firebase/firestore";
 
 type Listing = {
   id?: string;
@@ -72,10 +72,13 @@ const images = [listing?.file, listing?.file2, listing?.file3]
       if (!listing?.email) return;
   
       try {
-        const userRef = doc(db, "users", listing.email);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          setAgentPhone(userSnap.data().phoneNumber || "");
+        const q = query(collection(db, "users"), where("email", "==", listing.email));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setAgentPhone(userData.phoneNumber || "");
+        } else {
+          console.warn("No user found with that email.");
         }
       } catch (error) {
         console.error("Error fetching agent phone:", error);
@@ -178,7 +181,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
           return;
         }
         const message = `Hi, I am from Shelter Space. I need the house "${listing.title}"`;
-        const url = `https://wa.me/${agentPhone}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/+237${agentPhone}?text=${encodeURIComponent(message)}`;
         window.open(url, "_blank");
       }}
       className="bg-green-600 text-white hover:bg-white hover:text-black px-6 py-3 flex items-center gap-2 text-sm"
