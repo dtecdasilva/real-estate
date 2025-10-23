@@ -18,7 +18,7 @@ interface FirebaseUser {
   idDocumentImage: string;
   submittedAt: string;
   verified: boolean;
-  whatsappNumber?: string;
+  whatsapp?: string;
   commissionFee?: string;
   visitFee?: string;
 }
@@ -83,7 +83,7 @@ export default function AdminsPage() {
       `${u.firstName} ${u.lastName}`,
       u.email,
       u.role,
-      u.whatsappNumber || "",
+      u.whatsapp|| "",
       u.commissionFee || "",
       u.visitFee || "",
       new Date(u.submittedAt).toLocaleString(),
@@ -152,7 +152,7 @@ export default function AdminsPage() {
                       {user.role}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3">{user.whatsappNumber || "-"}</td>
+                  <td className="px-4 py-3">{user.whatsapp || "-"}</td>
                   <td className="px-4 py-3">{user.commissionFee || "-"}</td>
                   <td className="px-4 py-3">{user.visitFee || "-"}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
