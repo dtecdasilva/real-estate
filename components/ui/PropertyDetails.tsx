@@ -112,11 +112,16 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           .toLowerCase()
           .includes(textFilter.toLowerCase())
       : true;
+
     const priceMatch = (() => {
         if (!priceRange) return true;
+        if (priceRange.endsWith("+")) {
+          const min = Number(priceRange.replace("+", ""));
+          return listing.price >= min;
+        }
         const [min, max] = priceRange.split("-").map(Number);
         return listing.price >= min && listing.price <= max;
-      })();
+    })();
           // NEW: match based on ?cat=rent or ?cat=buy
     const catMatch = catFromQuery
       ? catFromQuery === "rent"
@@ -204,6 +209,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
               <option value="100000-200000">100k - 200k</option>
               <option value="200000-500000">200k - 500k</option>
               <option value="500000-1000000">500k - 1M</option>
+              <option value="1000000+">1M+</option>
             </select>
 
 
