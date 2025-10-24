@@ -391,7 +391,8 @@ const images = [listing?.file, listing?.file2, listing?.file3]
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Recommended Listings</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {recommendedListings.map((rec) => (
-              <div key={rec.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition">
+              <div key={rec.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition relative">
+              <div className="relative">
                 <Image
                   src={rec.file}
                   alt={rec.title}
@@ -399,18 +400,24 @@ const images = [listing?.file, listing?.file2, listing?.file3]
                   height={250}
                   className="w-full h-48 object-cover"
                 />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800">{rec.title}</h3>
-                  <p className="text-gray-500 text-sm">{rec.address}, {rec.city}</p>
-                  <p className="text-blue-600 font-bold mt-2">FCFA {rec.price.toLocaleString()}</p>
-                  <Button
-                    onClick={() => window.location.href = `/property/${rec.id}`}
-                    className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700 text-sm"
-                  >
-                    View Property
-                  </Button>
+                <div className="absolute top-4 right-4 bg-yellow-200 text-gray-900 text-xs font-semibold px-3 py-1 rounded-full z-10 shadow">
+                  {rec.type}
                 </div>
               </div>
+            
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-800">{rec.title}</h3>
+                <p className="text-gray-500 text-sm">{rec.address}, {rec.city}</p>
+                <p className="text-blue-600 font-bold mt-2">FCFA {rec.price.toLocaleString()}</p>
+                <Button
+                  onClick={() => window.location.href = `/property/${rec.id}`}
+                  className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700 text-sm"
+                >
+                  View Property
+                </Button>
+              </div>
+            </div>
+            
             ))}
           </div>
         </div>
