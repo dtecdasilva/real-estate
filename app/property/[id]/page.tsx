@@ -280,7 +280,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
               className="bg-blue-600 text-white hover:bg-white hover:text-black px-6 py-3 flex items-center gap-2 text-sm"
             >
               <Calendar size={18} />
-              Reserve Now
+              Reserve
             </Button>
 
 
