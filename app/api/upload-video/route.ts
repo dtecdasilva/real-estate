@@ -2,6 +2,7 @@ import { google } from "googleapis";
 
 export const POST = async (req: Request) => {
   try {
+    // Parse FormData from the request
     const formData = await req.formData();
     const fileInput = formData.get("file");
 
@@ -11,7 +12,7 @@ export const POST = async (req: Request) => {
 
     const file: File = fileInput;
 
-    // OAuth client
+    // OAuth2 client setup
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET
@@ -22,13 +23,13 @@ export const POST = async (req: Request) => {
 
     const youtube = google.youtube({ version: "v3", auth: oauth2Client });
 
-    // Upload video
+    // Upload video to YouTube
     const res = await youtube.videos.insert({
       part: ["snippet", "status"],
       requestBody: {
         snippet: {
-          title: "Property Video #Shorts",
-          description: "Check out this property! #Shorts",
+          title: "Property Video #Shorts",       // You can replace with dynamic title
+          description: "Check out this property! #Shorts", // Dynamic description
           tags: ["real estate", "Cameroon", "Shorts"]
         },
         status: {
@@ -36,7 +37,7 @@ export const POST = async (req: Request) => {
         }
       },
       media: {
-        body: file.stream() // use stream instead of Buffer
+        body: file.stream() // streaming works in Vercel serverless
       }
     });
 
@@ -47,12 +48,17 @@ export const POST = async (req: Request) => {
       status: 200,
       headers: { "Content-Type": "application/json" }
     });
-    } catch (error: unknown) {
+
+  } catch (error: unknown) {
+    // Detailed logging for debugging
     if (error instanceof Error) {
       console.error("Upload error:", error.message);
-    } else {
+    } else if (typeof error === "object" && error !== null) {
       console.error("Upload error:", error);
+    } else {
+      console.error("Unknown upload error:", error);
     }
+
     return new Response("Failed to upload video", { status: 500 });
   }
 };
