@@ -375,7 +375,13 @@ useEffect(() => {
           <div className="grid md:grid-cols-3 gap-6">
             {recommendedListings.map((rec) => (
               <div key={rec.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition">
-                
+                <Image
+                  src={rec.file}
+                  alt={rec.title}
+                  width={400}
+                  height={250}
+                  className="w-full h-48 object-cover"
+                />
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-800">{rec.title}</h3>
                   <p className="text-gray-500 text-sm">{rec.address}, {rec.city}</p>
