@@ -65,6 +65,38 @@ const images = [listing?.file, listing?.file2, listing?.file3]
 
     fetchListing();
   }, [id]);
+  const [recommendedListings, setRecommendedListings] = useState<Listing[]>([]);
+
+useEffect(() => {
+  if (!listing) return; // early return inside effect is fine
+
+  const fetchRecommended = async () => {
+    try {
+      const listingsRef = collection(db, "listings");
+      const q = query(
+        listingsRef,
+        where("city", "==", listing.city),
+        where("type", "==", listing.type)
+      );
+
+      const querySnapshot = await getDocs(q);
+      const results: Listing[] = [];
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data() as Listing;
+        if (docSnap.id !== listing.id && data.price <= listing.price * 1.2 && data.price >= listing.price * 0.8) {
+          results.push({ id: docSnap.id, ...data });
+        }
+      });
+
+      setRecommendedListings(results);
+    } catch (error) {
+      console.error("Error fetching recommended listings:", error);
+    }
+  };
+
+  fetchRecommended();
+}, [listing]);
 
   const [agentPhone, setAgentPhone] = useState("");
   const [comFee, setComFee] = useState("");
@@ -142,40 +174,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
   
 
   if (!listing) return <div className="p-8 text-center">Loading...</div>;
-  const [recommendedListings, setRecommendedListings] = useState<Listing[]>([]);
-  useEffect(() => {
-    const fetchRecommended = async () => {
-      if (!listing) return;
   
-      try {
-        const listingsRef = collection(db, "listings");
-        const q = query(
-          listingsRef,
-          where("city", "==", listing.city),
-          where("type", "==", listing.type)
-        );
-  
-        const querySnapshot = await getDocs(q);
-        const results: Listing[] = [];
-  
-        querySnapshot.forEach((docSnap) => {
-          const data = docSnap.data() as Listing;
-          // Filter out the current listing and only similar budget
-          if (docSnap.id !== listing.id && data.price <= listing.price * 1.2 && data.price >= listing.price * 0.8) {
-            results.push({ id: docSnap.id, ...data });
-          }
-        });
-  
-        setRecommendedListings(results);
-      } catch (error) {
-        console.error("Error fetching recommended listings:", error);
-      }
-    };
-  
-    fetchRecommended();
-  }, [listing]);
-  
-
   return (
     <div className="bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-10">
@@ -371,34 +370,34 @@ const images = [listing?.file, listing?.file2, listing?.file3]
         </div>
       </div>
       {recommendedListings.length > 0 && (
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recommended Listings</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {recommendedListings.map((rec) => (
-              <div key={rec.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition">
-                <Image
-                  src={rec.file}
-                  alt={rec.title}
-                  width={400}
-                  height={250}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800">{rec.title}</h3>
-                  <p className="text-gray-500 text-sm">{rec.address}, {rec.city}</p>
-                  <p className="text-blue-600 font-bold mt-2">FCFA {rec.price.toLocaleString()}</p>
-                  <Button
-                    onClick={() => window.location.href = `/listing/${rec.id}`}
-                    className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700 text-sm"
-                  >
-                    View Property
-                  </Button>
-                </div>
-              </div>
-            ))}
+  <div className="mt-16">
+    <h2 className="text-2xl font-bold text-gray-900 mb-6">Recommended Listings</h2>
+    <div className="grid md:grid-cols-3 gap-6">
+      {recommendedListings.map((rec) => (
+        <div key={rec.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition">
+          <Image
+            src={rec.file}
+            alt={rec.title}
+            width={400}
+            height={250}
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="text-lg font-semibold text-gray-800">{rec.title}</h3>
+            <p className="text-gray-500 text-sm">{rec.address}, {rec.city}</p>
+            <p className="text-blue-600 font-bold mt-2">FCFA {rec.price.toLocaleString()}</p>
+            <Button
+              onClick={() => window.location.href = `/listing/${rec.id}`}
+              className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700 text-sm"
+            >
+              View Property
+            </Button>
           </div>
         </div>
-      )}
+      ))}
+    </div>
+  </div>
+)}
 
       {/* Modal */}
       <Dialog open={isOpen} onClose={handleDialogClose} className="fixed z-50 inset-0 overflow-y-auto">
