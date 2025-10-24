@@ -366,7 +366,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
               <ul className="space-y-2">
                 <li className="flex justify-between items-center text-gray-600">
                   <span>Visitation Fee</span>
-                  <span className="font-medium text-gray-800">{visitFee ? `₣${visitFee.toLocaleString()}` : "0"}</span>
+                  <span className="font-medium text-gray-800">{visitFee ? `₣${Number(visitFee).toLocaleString()}` : "0"}</span>
                 </li>
                 <li className="flex justify-between items-center text-gray-600">
                   <span>Commission Fee</span>
