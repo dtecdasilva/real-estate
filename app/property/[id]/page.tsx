@@ -315,7 +315,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
               <p className="text-gray-700 font-medium mb-2">Agent Fees</p>
               <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
                 <li>Visit Fee: {visitFee}</li>
-                <li>Commision Fee: {comFee}</li>
+                <li>Commision Fee: {((Number(comFee) || 0) / 100) * (Number(listing.price) || 0)}</li>
               </ul>
             </div>
             <div className="bg-white rounded-xl overflow-hidden shadow">
