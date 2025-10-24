@@ -2,16 +2,14 @@ import { google } from "googleapis";
 
 export const POST = async (req: Request) => {
   try {
-    // Expecting a FormData with a video file
     const formData = await req.formData();
-    const file = formData.get("file") as any; // File from the form
+    const fileInput = formData.get("file");
 
-    if (!file) {
-      return new Response("No video file provided", { status: 400 });
+    if (!(fileInput instanceof File)) {
+      return new Response("No valid video file selected", { status: 400 });
     }
 
-    // Read video into buffer
-    const videoBuffer = Buffer.from(await file.arrayBuffer());
+    const file: File = fileInput;
 
     // OAuth client
     const oauth2Client = new google.auth.OAuth2(
@@ -38,7 +36,7 @@ export const POST = async (req: Request) => {
         }
       },
       media: {
-        body: videoBuffer
+        body: file.stream() // use stream instead of Buffer
       }
     });
 
