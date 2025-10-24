@@ -69,35 +69,50 @@ const images = [listing?.file, listing?.file2, listing?.file3]
 
 useEffect(() => {
   if (!listing) return; // early return inside effect is fine
-
   const fetchRecommended = async () => {
     try {
       const listingsRef = collection(db, "listings");
-      const q = query(
-        listingsRef,
-        where("city", "==", listing.city),
-        where("type", "==", listing.type)
-      );
-
-      const querySnapshot = await getDocs(q);
-      const results: Listing[] = [];
-
+      const querySnapshot = await getDocs(listingsRef);
+      const allListings: Listing[] = [];
+  
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data() as Listing;
-        if (docSnap.id !== listing.id && data.price <= listing.price * 1.2 && data.price >= listing.price * 0.8) {
-          results.push({ id: docSnap.id, ...data });
+        if (docSnap.id !== listing.id) {
+          allListings.push({ id: docSnap.id, ...data });
         }
       });
-
-      setRecommendedListings(results);
+  
+      // Compute matching score for each listing
+      const scored = allListings.map((item) => {
+        let score = 0;
+  
+        // Location match
+        if (item.city === listing.city) score += 1;
+  
+        // Type match
+        if (item.type === listing.type) score += 1;
+  
+        // Price within 20% range
+        if (item.price >= listing.price * 0.8 && item.price <= listing.price * 1.2) score += 1;
+  
+        return { ...item, score };
+      });
+  
+      // Sort by highest score, then price closeness
+      const sorted = scored.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return Math.abs(a.price - listing.price) - Math.abs(b.price - listing.price);
+      });
+  
+      // Pick top 3 minimum (or more if available)
+      const topRecommendations = sorted.slice(0, Math.max(3, sorted.length));
+  
+      setRecommendedListings(topRecommendations);
     } catch (error) {
       console.error("Error fetching recommended listings:", error);
     }
   };
-
-  fetchRecommended();
-}, [listing]);
-
+  
   const [agentPhone, setAgentPhone] = useState("");
   const [comFee, setComFee] = useState("");
   const [visitFee, setVisitFee] = useState("");
