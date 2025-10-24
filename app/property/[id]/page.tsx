@@ -368,8 +368,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      </div>
-      {recommendedListings.length > 0 && (
+        {recommendedListings.length > 0 && (
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Recommended Listings</h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -398,6 +397,8 @@ useEffect(() => {
           </div>
         </div>
       )}
+      </div>
+      
 
       {/* Modal */}
       <Dialog open={isOpen} onClose={handleDialogClose} className="fixed z-50 inset-0 overflow-y-auto">
