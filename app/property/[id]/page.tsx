@@ -82,36 +82,36 @@ const images = [listing?.file, listing?.file2, listing?.file3]
         }
       });
   
-      // Compute matching score for each listing
+      // Compute matching score with priority
       const scored = allListings.map((item) => {
         let score = 0;
   
-        // Location match
-        if (item.city === listing.city) score += 1;
+        // 1️⃣ Highest priority: same city (weight 3)
+        if (item.city === listing.city) score += 3;
   
-        // Type match
-        if (item.type === listing.type) score += 1;
+        // 2️⃣ Next: same property type (weight 2)
+        if (item.type === listing.type) score += 2;
   
-        // Price within 20% range
+        // 3️⃣ Lowest: within ±20% budget range (weight 1)
         if (item.price >= listing.price * 0.8 && item.price <= listing.price * 1.2) score += 1;
   
         return { ...item, score };
       });
   
-      // Sort by highest score, then price closeness
+      // Sort by highest score first, then closest price
       const sorted = scored.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
         return Math.abs(a.price - listing.price) - Math.abs(b.price - listing.price);
       });
   
-      // Pick top 3 minimum (or more if available)
+      // Select top 3 best-matched listings only
       const topRecommendations = sorted.slice(0, 3);
   
       setRecommendedListings(topRecommendations);
     } catch (error) {
       console.error("Error fetching recommended listings:", error);
     }
-  };
+  };  
 
   fetchRecommended();
   }, [listing]);
