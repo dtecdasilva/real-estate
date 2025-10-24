@@ -105,7 +105,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
       });
   
       // Pick top 3 minimum (or more if available)
-      const topRecommendations = sorted.slice(0, Math.max(3, sorted.length));
+      const topRecommendations = sorted.slice(0, 3);
   
       setRecommendedListings(topRecommendations);
     } catch (error) {
