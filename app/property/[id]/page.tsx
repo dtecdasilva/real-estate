@@ -67,7 +67,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
   }, [id]);
   const [recommendedListings, setRecommendedListings] = useState<Listing[]>([]);
 
-useEffect(() => {
+  useEffect(() => {
   if (!listing) return; // early return inside effect is fine
   const fetchRecommended = async () => {
     try {
@@ -112,7 +112,10 @@ useEffect(() => {
       console.error("Error fetching recommended listings:", error);
     }
   };
-  
+
+  fetchRecommended();
+  }, [listing]);
+
   const [agentPhone, setAgentPhone] = useState("");
   const [comFee, setComFee] = useState("");
   const [visitFee, setVisitFee] = useState("");
