@@ -315,7 +315,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
               <p className="text-gray-800 font-semibold text-lg mb-4">Agent Fees</p>
               <ul className="space-y-2">
                 <li className="flex justify-between items-center text-gray-600">
-                  <span>Visit Fee</span>
+                  <span>Visitation Fee</span>
                   <span className="font-medium text-gray-800">{visitFee ? `₣${visitFee.toLocaleString()}` : "0"}</span>
                 </li>
                 <li className="flex justify-between items-center text-gray-600">
