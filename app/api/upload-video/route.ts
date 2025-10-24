@@ -47,8 +47,8 @@ export const POST = async (req: Request) => {
       status: 200,
       headers: { "Content-Type": "application/json" }
     });
-  } catch (error) {
-    console.error(error);
+    } catch (error: any) {
+    console.error("Upload error:", error.response?.data || error.message || error);
     return new Response("Failed to upload video", { status: 500 });
-  }
+  }  
 };
