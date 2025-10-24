@@ -34,6 +34,9 @@ export default function Hero() {
   const [uploadedImageUrl3, setUploadedImageUrl3] = useState('');
   const { user } = useUser();
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoLink, setVideoLink] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -80,7 +83,7 @@ export default function Hero() {
       file2: uploadedImageUrl2,
       file3: uploadedImageUrl3,
       type: form.type.value,
-      video: form.video.value,
+      video: videoLink,
       availability: "open",
     };
   
@@ -381,11 +384,52 @@ export default function Hero() {
       <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
       <UploadForm onUpload={(url) => setUploadedImageUrl3(url)} />
 
-      <textarea
-        placeholder="Video Link"
-        name="video"
-        className="w-full border p-2 rounded"
-      />
+      <div className="space-y-2">
+        <label className="block font-medium">Upload Property Video (Short)</label>
+        <input
+          type="file"
+          accept="video/*"
+          onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
+          className="w-full border p-2 rounded"
+        />
+
+        <Button
+          type="button"
+          className="bg-green-600 text-white w-full"
+          disabled={!videoFile || uploading}
+          onClick={async () => {
+            if (!videoFile) return;
+            setUploading(true);
+
+            try {
+              const formData = new FormData();
+              formData.append("file", videoFile);
+
+              const res = await fetch("/api/upload-video", {
+                method: "POST",
+                body: formData,
+              });
+
+              const data = await res.json();
+              setVideoLink(data.videoLink);
+              alert("Video uploaded! Link: " + data.videoLink);
+            } catch (err) {
+              console.error(err);
+              alert("Failed to upload video.");
+            } finally {
+              setUploading(false);
+            }
+          }}
+        >
+          {uploading ? "Uploading..." : "Upload to YouTube"}
+        </Button>
+
+        {videoLink && (
+          <p className="text-sm text-green-600">
+            Uploaded! Link: <a href={videoLink} target="_blank" className="underline">{videoLink}</a>
+          </p>
+        )}
+      </div>
       <Button type="submit" className="bg-blue-600 text-white w-full">
         Submit Listing
       </Button>
