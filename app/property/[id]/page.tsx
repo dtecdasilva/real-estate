@@ -404,7 +404,7 @@ const images = [listing?.file, listing?.file2, listing?.file3]
                   <p className="text-gray-500 text-sm">{rec.address}, {rec.city}</p>
                   <p className="text-blue-600 font-bold mt-2">FCFA {rec.price.toLocaleString()}</p>
                   <Button
-                    onClick={() => window.location.href = `/listing/${rec.id}`}
+                    onClick={() => window.location.href = `/property/${rec.id}`}
                     className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700 text-sm"
                   >
                     View Property
