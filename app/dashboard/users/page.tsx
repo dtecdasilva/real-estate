@@ -29,7 +29,6 @@ export default function AdminsPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const itemsPerPage = 5;
 
