@@ -67,6 +67,8 @@ const images = [listing?.file, listing?.file2, listing?.file3]
   }, [id]);
 
   const [agentPhone, setAgentPhone] = useState("");
+  const [comFee, setComFee] = useState("");
+  const [visitFee, setVisitFee] = useState("");
   useEffect(() => {
     const fetchAgentPhone = async () => {
       if (!listing?.email) return;
@@ -77,6 +79,8 @@ const images = [listing?.file, listing?.file2, listing?.file3]
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           setAgentPhone(userData.whatsapp || ""); 
+          setComFee(userData.commissionFee || ""); 
+          setVisitFee(userData.visitFee || ""); 
         } else {
           console.warn("No user found with that email.");
         }
@@ -308,11 +312,10 @@ const images = [listing?.file, listing?.file2, listing?.file3]
           {/* Sidebar */}
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-xl shadow">
-              <p className="text-gray-700 font-medium mb-2">Highlights</p>
+              <p className="text-gray-700 font-medium mb-2">Agent Fees</p>
               <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                <li>Top Location: Highly rated by guests (9.3)</li>
-                <li>Fast Wi-Fi</li>
-                <li>Private bathrooms</li>
+                <li>Visit Fee: {visitFee}</li>
+                <li>Commision Fee: {comFee}</li>
               </ul>
             </div>
             <div className="bg-white rounded-xl overflow-hidden shadow">
