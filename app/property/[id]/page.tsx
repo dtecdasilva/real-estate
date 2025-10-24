@@ -311,11 +311,19 @@ const images = [listing?.file, listing?.file2, listing?.file3]
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <div className="bg-white p-4 rounded-xl shadow">
-              <p className="text-gray-700 font-medium mb-2">Agent Fees</p>
-              <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                <li>Visit Fee: {visitFee}</li>
-                <li>Commision Fee: {((Number(comFee) || 0) / 100) * (Number(listing.price) || 0)}</li>
+            <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 w-full max-w-sm mx-auto">
+              <p className="text-gray-800 font-semibold text-lg mb-4">Agent Fees</p>
+              <ul className="space-y-2">
+                <li className="flex justify-between items-center text-gray-600">
+                  <span>Visit Fee</span>
+                  <span className="font-medium text-gray-800">{visitFee ? `₣${visitFee.toLocaleString()}` : "0"}</span>
+                </li>
+                <li className="flex justify-between items-center text-gray-600">
+                  <span>Commission Fee</span>
+                  <span className="font-medium text-gray-800">
+                    {(((Number(comFee) || 0) / 100) * (Number(listing.price) || 0)).toLocaleString()}
+                  </span>
+                </li>
               </ul>
             </div>
             <div className="bg-white rounded-xl overflow-hidden shadow">
