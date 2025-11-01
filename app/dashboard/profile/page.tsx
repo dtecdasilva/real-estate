@@ -12,36 +12,38 @@ import { db } from "@/lib/firebase";
 
 export default function ProfilePage() {
   const { user } = useUser();
-  const isVerified = user?.emailAddresses[0]?.verification?.status === "verified";
+  const isEmailVerified = user?.emailAddresses[0]?.verification?.status === "verified";
+
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
   const [fullName, setFullName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [visitFee, setVisitFee] = useState('');
   const [commissionFee, setCommissionFee] = useState('');
+  const [verified, setVerified] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) return;
-  
+
       setFullName(`${user.firstName || ""} ${user.lastName || ""}`);
-  
+
       const docRef = doc(db, "users", user.id);
       const docSnap = await getDoc(docRef);
-  
+
       if (docSnap.exists()) {
         const data = docSnap.data();
         setWhatsapp(data.whatsapp || "");
         setVisitFee(data.visitFee || "");
         setCommissionFee(data.commissionFee || "");
+        setVerified(data.verified || false);
       }
     };
-  
+
     fetchUserData();
   }, [user]);
-  
 
-  const handleNameSubmit = async () => {
+  const handleSave = async () => {
     if (!user) return;
     const [firstName, ...rest] = fullName.trim().split(" ");
     const lastName = rest.join(" ");
@@ -54,13 +56,13 @@ export default function ProfilePage() {
         whatsapp,
         visitFee,
         commissionFee,
-        role: 'agent',
         profileImage: uploadedImageUrl || user.imageUrl || "",
         idDocumentImage: uploadedImageUrl2 || "",
-        verified: false,
+        verified,
         submittedAt: new Date(),
       });
-      alert("User details & images saved to Firebase!");
+
+      alert("Details saved successfully!");
     } catch (err) {
       console.error("Error saving to Firebase:", err);
       alert("Failed to save user data.");
@@ -82,8 +84,8 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <p><strong>Email:</strong> {user?.emailAddresses[0]?.emailAddress}</p>
-              
-              {!isVerified && (
+
+              {!isEmailVerified && (
                 <Button
                   onClick={() =>
                     user?.emailAddresses[0]?.prepareVerification({ strategy: "email_code" })
@@ -95,57 +97,60 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Upload & Details Section */}
+          {/* Details Section */}
           <Card>
             <CardHeader>
-            <CardTitle>{isVerified ? "Edit Details" : "Upload for Verification"}</CardTitle>
+              <CardTitle>
+                {verified ? "Edit Profile Details" : "Submit for Verification"}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Full Name</label>
-                <Input
-                  type="text"
-                  placeholder="Full Name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">WhatsApp Number</label>
-                <Input
-                  type="number"
-                  placeholder="e.g. 6xx xxx xxx"
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Visit Fee (FCFA)</label>
-                <Input
-                  type="number"
-                  placeholder="e.g. 2000"
-                  value={visitFee}
-                  onChange={(e) => setVisitFee(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Commission Fee (%)</label>
-                <Input
-                  type="number"
-                  placeholder="e.g. 10"
-                  value={commissionFee}
-                  onChange={(e) => setCommissionFee(e.target.value)}
-                />
-              </div>
-
-              {!isVerified && (
+              {verified ? (
                 <>
                   <div>
-                    <label className="text-sm font-medium">Upload your Photo</label>
-                    <UploadForm onUpload={(url) => setUploadedImageUrl(url)} /> 
+                    <label className="text-sm font-medium">Full Name</label>
+                    <Input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium">WhatsApp Number</label>
+                    <Input
+                      type="number"
+                      placeholder="e.g. 6xx xxx xxx"
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium">Visit Fee (FCFA)</label>
+                    <Input
+                      type="number"
+                      placeholder="e.g. 2000"
+                      value={visitFee}
+                      onChange={(e) => setVisitFee(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium">Commission Fee (%)</label>
+                    <Input
+                      type="number"
+                      placeholder="e.g. 10"
+                      value={commissionFee}
+                      onChange={(e) => setCommissionFee(e.target.value)}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="text-sm font-medium">Upload Your Photo</label>
+                    <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
                   </div>
 
                   <div>
@@ -155,8 +160,8 @@ export default function ProfilePage() {
                 </>
               )}
 
-              <Button onClick={handleNameSubmit} className="w-full">
-                {isVerified ? "Save Changes" : "Submit for Verification"}
+              <Button onClick={handleSave} className="w-full">
+                {verified ? "Save Changes" : "Submit for Verification"}
               </Button>
             </CardContent>
           </Card>

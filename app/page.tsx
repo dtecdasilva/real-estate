@@ -380,9 +380,9 @@ export default function Hero() {
         required
       />
       
-      <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
-      <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
-      <UploadForm onUpload={(url) => setUploadedImageUrl3(url)} />
+        <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
+        <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
+        <UploadForm onUpload={(url) => setUploadedImageUrl3(url)} />
 
       <div className="space-y-2">
         <label className="block font-medium">Upload Property Video (Short)</label>
