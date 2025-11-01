@@ -63,7 +63,7 @@ export default function AgentSidebar() {
         <nav className="flex flex-col gap-4">
           <SidebarLink icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" href="/dashboard" />
 
-          {role !== "agent" && (
+          {role === "sadmin" && (
             <SidebarLink icon={<Users className="w-4 h-4" />} label="Users" href="/dashboard/users" />
           )}
 

@@ -55,6 +55,7 @@ export default function ProfilePage() {
         email: user.emailAddresses[0]?.emailAddress,
         whatsapp,
         visitFee,
+        role: 'agent',
         commissionFee,
         profileImage: uploadedImageUrl || user.imageUrl || "",
         idDocumentImage: uploadedImageUrl2 || "",
