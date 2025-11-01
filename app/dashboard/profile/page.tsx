@@ -105,48 +105,49 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {verified ? (
-                <>
-                  <div>
-                    <label className="text-sm font-medium">Full Name</label>
-                    <Input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                    />
-                  </div>
+              {/* Editable fields (for both verified and unverified users) */}
+              <div>
+                <label className="text-sm font-medium">Full Name</label>
+                <Input
+                  type="text"
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
+              </div>
 
-                  <div>
-                    <label className="text-sm font-medium">WhatsApp Number</label>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 6xx xxx xxx"
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value)}
-                    />
-                  </div>
+              <div>
+                <label className="text-sm font-medium">WhatsApp Number</label>
+                <Input
+                  type="number"
+                  placeholder="e.g. 6xx xxx xxx"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                />
+              </div>
 
-                  <div>
-                    <label className="text-sm font-medium">Visit Fee (FCFA)</label>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 2000"
-                      value={visitFee}
-                      onChange={(e) => setVisitFee(e.target.value)}
-                    />
-                  </div>
+              <div>
+                <label className="text-sm font-medium">Visit Fee (FCFA)</label>
+                <Input
+                  type="number"
+                  placeholder="e.g. 2000"
+                  value={visitFee}
+                  onChange={(e) => setVisitFee(e.target.value)}
+                />
+              </div>
 
-                  <div>
-                    <label className="text-sm font-medium">Commission Fee (%)</label>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 10"
-                      value={commissionFee}
-                      onChange={(e) => setCommissionFee(e.target.value)}
-                    />
-                  </div>
-                </>
-              ) : (
+              <div>
+                <label className="text-sm font-medium">Commission Fee (%)</label>
+                <Input
+                  type="number"
+                  placeholder="e.g. 10"
+                  value={commissionFee}
+                  onChange={(e) => setCommissionFee(e.target.value)}
+                />
+              </div>
+
+              {/* Only show upload section if not verified */}
+              {!verified && (
                 <>
                   <div>
                     <label className="text-sm font-medium">Upload Your Photo</label>
