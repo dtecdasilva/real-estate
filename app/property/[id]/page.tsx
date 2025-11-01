@@ -462,21 +462,41 @@ const images = [listing?.file, listing?.file2, listing?.file3]
             <form
             onSubmit={(e) => {
               e.preventDefault();
-              handleReserveSubmit();; // currently Flutterwave payment
+              handleReserveSubmit(); // currently Flutterwave payment
             }}
-            className="space-y-4"
+            className="space-y-5 bg-white p-6 rounded-2xl shadow-md max-w-md mx-auto"
           >
             <div>
-              <label>Full Name</label>
-              <input name="fullName" value={formData.fullName} onChange={handleInputChange} required />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <input
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                required
+                placeholder="Enter your full name"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
             </div>
-            <div>
-              <label>Phone Number</label>
-              <input name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} required />
-            </div>
-            <Button type="submit">Reserve Now</Button>
-          </form>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleInputChange}
+                required
+                placeholder="e.g. 6xx xxx xxx"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all duration-200"
+            >
+              Reserve Now
+            </Button>
+          </form>
           </Dialog.Panel>
         </div>
       </Dialog>
