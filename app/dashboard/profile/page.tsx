@@ -85,7 +85,12 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <p><strong>Email:</strong> {user?.emailAddresses[0]?.emailAddress}</p>
-              <p><strong>Verified?:</strong> {verified ? "Yes" : "No"}</p>
+              <p>
+                <strong>Verified?:</strong>{" "}
+                <span className={verified ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
+                  {verified ? "Yes" : "No"}
+                </span>
+              </p>
               {!isEmailVerified && (
                 <Button
                   onClick={() =>
