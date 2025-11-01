@@ -85,7 +85,7 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <p><strong>Email:</strong> {user?.emailAddresses[0]?.emailAddress}</p>
-
+              <p><strong>Verified?:</strong> {verified ? "Yes" : "No"}</p>
               {!isEmailVerified && (
                 <Button
                   onClick={() =>
