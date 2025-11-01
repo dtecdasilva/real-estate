@@ -155,7 +155,7 @@ export default function AdminsPage() {
                   <td className="px-4 py-3">{user.commissionFee || "-"}%</td>
                   <td className="px-4 py-3">{user.visitFee || "-"}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    {new Date(user.submittedAt).toLocaleString()}
+                    {user.submittedAt || "-"}
                   </td>
                   <td className="px-4 py-3">
                     <span className={user.verified ? "text-green-600 font-medium" : "text-yellow-600"}>
