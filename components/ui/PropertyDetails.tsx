@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -56,26 +56,34 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   // Fetch listings from Firebase
   useEffect(() => {
     const fetchListings = async () => {
-      const snapshot = await getDocs(collection(db, "listings"));
-      const data: Listing[] = snapshot.docs.map((doc) => {
-        const docData = doc.data();
-        return {
-          id: doc.id,
-          title: docData.title as string,
-          description: docData.description as string,
-          address: docData.address as string,
-          price: Number(docData.price),
-          email: docData.email as string,
-          city: docData.city as string,
-          months: Number(docData.months),
-          type: docData.type as string,
-          file: docData.file as string,
-        };
-      });
-      setListings(data); // now this will work
+      try {
+        // Create a query to only get listings where availability == "open"
+        const q = query(collection(db, "listings"), where("availability", "==", "open"));
+        const snapshot = await getDocs(q);
+  
+        const data: Listing[] = snapshot.docs.map((doc) => {
+          const docData = doc.data();
+          return {
+            id: doc.id,
+            title: docData.title as string,
+            description: docData.description as string,
+            address: docData.address as string,
+            price: Number(docData.price),
+            email: docData.email as string,
+            city: docData.city as string,
+            months: Number(docData.months),
+            type: docData.type as string,
+            file: docData.file as string,
+          };
+        });
+  
+        setListings(data);
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
     };
   
-    fetchListings(); // <-- you were missing this call
+    fetchListings();
   }, []);
 
   // Toggle description expand/collapse
