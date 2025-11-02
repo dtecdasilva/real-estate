@@ -40,6 +40,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   const [listings, setListings] = useState<Listing[]>([]); // <-- add this
   // NEW: read cat query (rent or buy)
   const catFromQuery = searchParams.get("cat") || "";
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const typeFromQuery = searchParams.get("type") || "";
   const [typeFilter, setTypeFilter] = useState(typeFromQuery);
@@ -167,6 +168,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
         {/* Filters */}
         {effectiveShowFilters && (
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
+            {/* Always show search bar */}
             <input
               type="text"
               placeholder="Search anything..."
@@ -175,63 +177,70 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
               className="border p-2 rounded w-full md:w-64"
             />
 
-            <select
-              value={cityFilter}
-              onChange={(e) => setCityFilter(e.target.value)}
-              className="border p-2 rounded w-full md:w-64"
-            >
-              <option value="">All Cities</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="border p-2 rounded w-full md:w-64"
-            >
-              <option value="">All Types</option>
-              {types.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="number"
-              placeholder="How many months can you pay?"
-              value={monthsFilter}
-              onChange={(e) => setMonthsFilter(e.target.value)}
-              className="border p-2 rounded w-full md:w-64"
-            />
-
-            <select
-              value={priceRange}
-              onChange={(e) => setPriceRange(e.target.value)}
-              className="border p-2 rounded w-full md:w-64"
-            >
-              <option value="">All Price Ranges</option>
-              <option value="25000-35000">25k - 35k</option>
-              <option value="35000-50000">35k - 50k</option>
-              <option value="50000-100000">50k - 100k</option>
-              <option value="100000-200000">100k - 200k</option>
-              <option value="200000-500000">200k - 500k</option>
-              <option value="500000-1000000">500k - 1M</option>
-              <option value="1000000+">1M+</option>
-            </select>
-
-
+            {/* Mobile: button to toggle extra filters */}
             <button
-              onClick={clearFilters}
-              className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 text-sm flex items-center gap-2"
+              className="md:hidden bg-blue-600 text-white px-3 py-2 rounded-md mt-2"
+              onClick={() => setShowMobileFilters(!showMobileFilters)}
             >
-              Clear
+              {showMobileFilters ? "Hide Filters" : "Show Filters"}
             </button>
 
+            {/* Extra filters: visible on desktop or when toggled on mobile */}
+            {(showMobileFilters || window.innerWidth >= 768) && (
+              <>
+                <select
+                  value={cityFilter}
+                  onChange={(e) => setCityFilter(e.target.value)}
+                  className="border p-2 rounded w-full md:w-64"
+                >
+                  <option value="">All Cities</option>
+                  {cities.map((city) => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="border p-2 rounded w-full md:w-64"
+                >
+                  <option value="">All Types</option>
+                  {types.map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+
+                <input
+                  type="number"
+                  placeholder="Months"
+                  value={monthsFilter}
+                  onChange={(e) => setMonthsFilter(e.target.value)}
+                  className="border p-2 rounded w-full md:w-64"
+                />
+
+                <select
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(e.target.value)}
+                  className="border p-2 rounded w-full md:w-64"
+                >
+                  <option value="">All Price Ranges</option>
+                  <option value="25000-35000">25k - 35k</option>
+                  <option value="35000-50000">35k - 50k</option>
+                  <option value="50000-100000">50k - 100k</option>
+                  <option value="100000-200000">100k - 200k</option>
+                  <option value="200000-500000">200k - 500k</option>
+                  <option value="500000-1000000">500k - 1M</option>
+                  <option value="1000000+">1M+</option>
+                </select>
+
+                <button
+                  onClick={clearFilters}
+                  className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 text-sm flex items-center gap-2"
+                >
+                  Clear
+                </button>
+              </>
+            )}
           </div>
         )}
 

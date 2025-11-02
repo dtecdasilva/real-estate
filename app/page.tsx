@@ -311,12 +311,13 @@ export default function Hero() {
           </SignInButton>
         </SignedOut>
         <select className="w-full border p-2 rounded" name="type" required>
-          <option>Select the type of house</option>
+          <option>Select the type of property(house)</option>
           <option>Chambre Moderne</option>
           <option>Studio</option>
           <option>Apartment</option>
           <option>House-For-Sale</option>
           <option>Guest-House</option>
+          <option>Shop</option>
           <option>Land</option>
         </select>
         <select
@@ -343,7 +344,7 @@ export default function Hero() {
           <option value="Foumban">Foumban</option>
           <option value="Bertoua">Bertoua</option>
           <option value="Ngaoundéré">Ngaoundéré</option>
-          <option value="Kousséri">Kousséri</option>
+          <option value="Kousséri">Kousséri</option>Mbouda
         </select>
       <input
         type="text"
