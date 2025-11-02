@@ -47,7 +47,7 @@ export default function AgentDashboard() {
   }, [userEmail]);
 
   const uploadedCount = listings.length;
-  const reservedCount = listings.filter((l) => l.availability === "Reserved").length;
+  const reservedCount = listings.filter((l) => l.availability === "reserved").length;
   const isVerified = user?.externalAccounts ? true : false; // replace with actual verification logic if needed
 
   return (
