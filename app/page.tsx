@@ -311,7 +311,7 @@ export default function Hero() {
           </SignInButton>
         </SignedOut>
         <select className="w-full border p-2 rounded" name="type" required>
-          <option>Select the type of property(house)</option>
+          <option>Select the type of property</option>
           <option>Chambre Moderne</option>
           <option>Studio</option>
           <option>Apartment</option>
