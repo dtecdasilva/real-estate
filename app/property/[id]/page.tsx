@@ -104,8 +104,8 @@ const images = [listing?.file, listing?.file2, listing?.file3]
         return Math.abs(a.price - listing.price) - Math.abs(b.price - listing.price);
       });
   
-      // Select top 3 best-matched listings only
-      const topRecommendations = sorted.slice(0, Math.max(3, sorted.length));
+      
+      const topRecommendations = sorted.slice(0, Math.min(6, Math.max(3, sorted.length)));
   
       setRecommendedListings(topRecommendations);
     } catch (error) {
