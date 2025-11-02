@@ -20,6 +20,7 @@ interface Listing {
   months: number;
   type: string;
   file: string; // Image URL
+  createdAt: Date;
 }
 interface PropertyDetailsProps {
   limit?: number;
@@ -74,9 +75,12 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
             months: Number(docData.months),
             type: docData.type as string,
             file: docData.file as string,
+            createdAt: docData.createdAt?.toDate?.() || new Date(), // <-- timestamp field
           };
         });
-  
+        
+        data.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
         setListings(data);
       } catch (error) {
         console.error("Error fetching listings:", error);
