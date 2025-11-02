@@ -9,7 +9,7 @@ import { Calendar, X, Video, Phone } from "lucide-react";
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { doc, getDoc, updateDoc, collection, query, where, getDocs} from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, query, where, getDocs, addDoc } from "firebase/firestore";
 
 type Listing = {
   id?: string;
@@ -168,6 +168,16 @@ const images = [listing?.file, listing?.file2, listing?.file3]
       // Update Firestore
       const docRef = doc(db, "listings", listing.id);
       await updateDoc(docRef, { availability: "reserved" });
+
+      // 2️⃣ Save reservation info to "contact" collection
+      await addDoc(collection(db, "contacts"), {
+        fullName: formData.fullName,
+        phoneNumber: formData.phoneNumber,
+        listingId: listing.id,
+        listingTitle: listing.title || "",
+        status: "reserved",
+        createdAt: new Date(),
+      });
   
       // Update local state
       setListing({ ...listing, availability: "reserved" });
