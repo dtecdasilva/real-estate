@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
+import UploadForm from "@/components/ui/UploadForm";
+// If not, import or create it properly
 
 interface Listing {
   id: string;
@@ -14,7 +16,7 @@ interface Listing {
   type: string;
   address: string;
   city: string;
-  months: string;
+  months: number;
   availability: string;
   description: string;
   email: string;
@@ -31,13 +33,17 @@ export default function ListingsPage() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const itemsPerPage = 5;
-  const { user } = useUser();
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
   const [formData, setFormData] = useState<Partial<Listing>>({});
-  const userEmail = user?.emailAddresses[0]?.emailAddress;
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [expandedListings, setExpandedListings] = useState<string[]>([]);
+  const itemsPerPage = 5;
 
+  const { user } = useUser();
+  const userEmail = user?.emailAddresses[0]?.emailAddress;
+
+  // ✅ Toggle description show/hide
   const toggleDescription = (id: string) => {
     setExpandedListings(prev =>
       prev.includes(id)
@@ -46,6 +52,7 @@ export default function ListingsPage() {
     );
   };
 
+  // ✅ Fetch listings from API
   useEffect(() => {
     async function fetchListings() {
       try {
@@ -64,6 +71,7 @@ export default function ListingsPage() {
     if (userEmail) fetchListings();
   }, [userEmail]);
 
+  // ✅ Search filter
   useEffect(() => {
     const filtered = listings.filter((l) =>
       `${l.title} ${l.address} ${l.city}`.toLowerCase().includes(search.toLowerCase())
@@ -72,12 +80,14 @@ export default function ListingsPage() {
     setCurrentPage(1);
   }, [search, listings]);
 
+  // ✅ Pagination logic
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
   const paginatedListings = filteredListings.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  // ✅ Export to CSV
   const exportCSV = () => {
     const headers = [
       "Title",
@@ -93,7 +103,7 @@ export default function ListingsPage() {
       "File 2",
       "File 3",
       "Video",
-      "Created At"
+      "Created At",
     ];
     const rows = filteredListings.map((l) => [
       l.title,
@@ -109,7 +119,7 @@ export default function ListingsPage() {
       l.file2,
       l.file3,
       l.video,
-      new Date(l.createdAt).toLocaleString()
+      new Date(l.createdAt).toLocaleString(),
     ]);
 
     const csvContent =
@@ -147,7 +157,7 @@ export default function ListingsPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* Table Section */}
+        {/* Table */}
         <div className="overflow-x-auto rounded-lg shadow bg-white">
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-100 border-b text-xs font-semibold text-gray-700 uppercase">
@@ -171,8 +181,8 @@ export default function ListingsPage() {
                   <td className="px-4 py-3">{l.type}</td>
                   <td className="px-4 py-3">{l.city}</td>
                   <td className="px-4 py-3">
-                    <Badge variant={l.availability ? "secondary" : "destructive"}>
-                      {l.availability || "N/A"}
+                    <Badge variant={l.availability === "Open" ? "secondary" : "destructive"}>
+                      {l.availability}
                     </Badge>
                   </td>
                   <td className="px-4 py-3 max-w-[200px]">
@@ -203,41 +213,41 @@ export default function ListingsPage() {
                   </td>
                   <td className="px-4 py-3 text-xs">{new Date(l.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        setEditingListing(l);
-                        setFormData(l);
-                      }}
-                    >
-                      Edit
-                    </Button>
-
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={async () => {
-                        if (confirm("Are you sure you want to delete this listing?")) {
-                          try {
-                            const res = await fetch(`/api/delete-listing/${l.id}`, {
-                              method: "DELETE",
-                            });
-                            if (!res.ok) throw new Error("Failed to delete listing");
-                            setListings((prev) => prev.filter((item) => item.id !== l.id));
-                            setFilteredListings((prev) => prev.filter((item) => item.id !== l.id));
-                          } catch (err) {
-                            console.error(err);
-                            alert("Error deleting listing. See console for details.");
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setEditingListing(l);
+                          setFormData(l);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={async () => {
+                          if (confirm("Are you sure you want to delete this listing?")) {
+                            try {
+                              const res = await fetch(`/api/delete-listing/${l.id}`, {
+                                method: "DELETE",
+                              });
+                              if (!res.ok) throw new Error("Failed to delete listing");
+                              setListings((prev) => prev.filter((item) => item.id !== l.id));
+                              setFilteredListings((prev) =>
+                                prev.filter((item) => item.id !== l.id)
+                              );
+                            } catch (err) {
+                              console.error(err);
+                              alert("Error deleting listing.");
+                            }
                           }
-                        }
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -299,38 +309,138 @@ export default function ListingsPage() {
             <div className="bg-white p-6 rounded-lg w-full max-w-xl relative max-h-[90vh] overflow-auto">
               <h2 className="text-xl font-bold mb-4">Edit Listing</h2>
 
-              <div className="space-y-2">
-                {[
-                  "title",
-                  "price",
-                  "type",
-                  "address",
-                  "city",
-                  "months",
-                  "availability",
-                  "description",
-                  "file",
-                  "file2",
-                  "file3",
-                  "video",
-                ].map((field) => (
-                  <div key={field} className="flex flex-col">
-                    <label className="font-medium capitalize">{field}</label>
-                    <input
-                      type={field === "price" ? "number" : "text"}
-                      value={formData[field as keyof Listing] || ""}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          [field]: field === "price" ? Number(e.target.value) : e.target.value,
-                        }))
+              <div className="space-y-4">
+                {/* Inputs */}
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={formData.title || ""}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full border p-2 rounded"
+                  required
+                />
+
+                <select
+                  value={formData.type || ""}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  className="w-full border p-2 rounded"
+                  required
+                >
+                  <option value="">Select the type of house</option>
+                  {["Chambre Moderne", "Studio", "Apartment", "House-For-Sale", "Guest-House", "Land"].map(
+                    (type) => (
+                      <option key={type}>{type}</option>
+                    )
+                  )}
+                </select>
+
+                <select
+                  value={formData.city || ""}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="w-full border p-2 rounded"
+                  required
+                >
+                  <option value="">Select a city</option>
+                  {[
+                    "Douala","Yaoundé","Bamenda","Bafoussam","Garoua","Maroua","Nkongsamba",
+                    "Ebolowa","Kribi","Limbe","Kumba","Buea","Foumban","Bertoua","Ngaoundéré","Kousséri"
+                  ].map((city) => (
+                    <option key={city}>{city}</option>
+                  ))}
+                </select>
+
+                <input
+                  type="text"
+                  placeholder="Address"
+                  value={formData.address || ""}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  className="w-full border p-2 rounded"
+                  required
+                />
+
+                <input
+                  type="number"
+                  placeholder="Price"
+                  value={formData.price || ""}
+                  onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                  className="w-full border p-2 rounded"
+                  required
+                />
+
+                <input
+                  type="number"
+                  placeholder="Minimum number of months"
+                  value={formData.months || ""}
+                  onChange={(e) => setFormData({ ...formData, months: Number(e.target.value) })}
+                  className="w-full border p-2 rounded"
+                  required
+                />
+
+                <select
+                  value={formData.availability || ""}
+                  onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
+                  className="w-full border p-2 rounded"
+                  required
+                >
+                  <option value={formData.availability || ""}>
+                    {formData.availability || "Select availability"}
+                  </option>
+                  {["Open", "Reserved", "Gone"]
+                    .filter((opt) => opt !== formData.availability)
+                    .map((opt) => (
+                      <option key={opt}>{opt}</option>
+                    ))}
+                </select>
+
+                <textarea
+                  placeholder="Description"
+                  value={formData.description || ""}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full border p-2 rounded"
+                  required
+                />
+
+                {/* Uploads */}
+                <UploadForm onUpload={(url) => setFormData({ ...formData, file: url })} />
+                <UploadForm onUpload={(url) => setFormData({ ...formData, file2: url })} />
+                <UploadForm onUpload={(url) => setFormData({ ...formData, file3: url })} />
+
+                <div className="space-y-2">
+                  <label className="block font-medium">Upload Property Video (Short)</label>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
+                    className="w-full border p-2 rounded"
+                  />
+                  <Button
+                    type="button"
+                    className="bg-green-600 text-white w-full"
+                    disabled={!videoFile || uploading}
+                    onClick={async () => {
+                      if (!videoFile) return;
+                      setUploading(true);
+                      try {
+                        const data = new FormData();
+                        data.append("file", videoFile);
+                        const res = await fetch("/api/upload-video", { method: "POST", body: data });
+                        const result = await res.json();
+                        setFormData((prev) => ({ ...prev, video: result.videoLink }));
+                        alert("Video uploaded!");
+                      } catch (err) {
+                        console.error(err);
+                        alert("Failed to upload video.");
+                      } finally {
+                        setUploading(false);
                       }
-                      className="p-2 border rounded"
-                    />
-                  </div>
-                ))}
+                    }}
+                  >
+                    {uploading ? "Uploading..." : "Upload to YouTube"}
+                  </Button>
+                </div>
               </div>
 
+              {/* Buttons */}
               <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
                 <Button variant="ghost" onClick={() => setEditingListing(null)}>
                   Cancel
@@ -343,12 +453,9 @@ export default function ListingsPage() {
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData),
                       });
-
                       if (!res.ok) throw new Error("Failed to update listing");
                       const updated = await res.json();
-                      setListings((prev) =>
-                        prev.map((l) => (l.id === updated.id ? updated : l))
-                      );
+                      setListings((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
                       setFilteredListings((prev) =>
                         prev.map((l) => (l.id === updated.id ? updated : l))
                       );
