@@ -272,6 +272,29 @@ export default function Hero() {
         </button>
       </div>
     </section>
+    {/* Floating WhatsApp button (paste before </main>) */}
+    <a
+      href="https://wa.me/237671543308"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+      className="fixed z-50 right-5 bottom-5 md:right-8 md:bottom-8 bg-[#25D366] w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+    >
+      {/* WhatsApp SVG (white) */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="28"
+        height="28"
+        aria-hidden="true"
+      >
+        <path
+          fill="#fff"
+          d="M20.52 3.48A11.88 11.88 0 0 0 12 0C5.372 0 .028 4.88 0 11.01a11.86 11.86 0 0 0 2.16 6.38L0 24l6.9-2.18A11.94 11.94 0 0 0 12 24c6.627 0 11.97-4.88 12-11.01.03-1.79-.4-3.54-1.48-5.51zM12 21.6c-1.22 0-2.42-.32-3.46-.93l-.25-.14-4.1 1.3 1.38-3.98-.16-.27A8.01 8.01 0 0 1 4 11.01C4 6.03 7.9 2.2 12 2.2c2.73 0 4.98 1.04 6.79 3-1.5 2.36-3.27 3.75-4.57 4.45-1.06.57-2.06.82-2.84.82-.94 0-1.5-.26-2.07-.55-.41-.2-.86-.43-1.37-.43-.23 0-.45.03-.67.1.06.33.2.66.42.99.39.6 1.04 1.32 2.19 2.16 1.08.79 1.98 1.08 2.71 1.08.9 0 1.69-.25 2.73-.7 1.28-.55 2.98-1.68 4.57-3.8-1.34 2.07-3.25 3.98-5.19 4.83-.97.43-1.86.59-2.81.59z"
+        />
+      </svg>
+    </a>
+
     <Suspense fallback={<div>Loading listings...</div>}>
       <PropertyDetails limit={3} showFilters={false} />
     </Suspense>
