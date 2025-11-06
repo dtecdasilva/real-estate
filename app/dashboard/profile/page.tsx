@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AgentSidebar from "@/components/ui/agent-sidebar";
-import UploadForm from "@/components/ui/UploadForm";
+// import UploadForm from "@/components/ui/UploadForm";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -14,8 +14,8 @@ export default function ProfilePage() {
   const { user } = useUser();
   const isEmailVerified = user?.emailAddresses[0]?.verification?.status === "verified";
 
-  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
-  const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
+  // const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  // const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
   const [fullName, setFullName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [visitFee, setVisitFee] = useState('');
@@ -57,8 +57,8 @@ export default function ProfilePage() {
         visitFee,
         role: 'agent',
         commissionFee,
-        profileImage: uploadedImageUrl || user.imageUrl || "",
-        idDocumentImage: uploadedImageUrl2 || "",
+        // profileImage: uploadedImageUrl || user.imageUrl || "",
+        // idDocumentImage: uploadedImageUrl2 || "",
         verified,
         submittedAt: new Date(),
       });
@@ -157,12 +157,12 @@ export default function ProfilePage() {
                 <>
                   <div>
                     <label className="text-sm font-medium">Upload Your Photo</label>
-                    <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
+                    {/* <UploadForm onUpload={(url) => setUploadedImageUrl(url)} /> */}
                   </div>
 
                   <div>
                     <label className="text-sm font-medium">Upload ID Card Document</label>
-                    <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
+                    {/* <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} /> */}
                   </div>
                 </>
               )}
