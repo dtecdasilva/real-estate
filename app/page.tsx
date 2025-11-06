@@ -18,6 +18,7 @@ import { useUser } from "@clerk/nextjs";
 import { Menu } from "lucide-react";
 import { doc, getDoc } from "firebase/firestore"; 
 import PropertyDetails from "@/components/ui/PropertyDetails";
+import VideoUploadForm from "@/components/ui/VideoUploadForm";
 
 
 
@@ -30,6 +31,7 @@ export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
+  const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string>("");
   const { user } = useUser();
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -79,7 +81,7 @@ export default function Hero() {
       email: form.email.value,
       file: uploadedImageUrls,
       type: form.type.value,
-      video: videoLink,
+      video: uploadedVideoUrl,
       availability: "open",
     };
   
@@ -401,6 +403,7 @@ export default function Hero() {
       />
       
       <UploadForm onUpload={(urls) => setUploadedImageUrls(urls)} />
+      <VideoUploadForm onUpload={(url) => setUploadedVideoUrl(url)} />
 
       <div className="space-y-2">
         <label className="block font-medium">Upload Property Video (Short)</label>
