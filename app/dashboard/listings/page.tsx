@@ -400,10 +400,7 @@ export default function ListingsPage() {
                   required
                 />
 
-                {/* Uploads */}
-                <UploadForm onUpload={(url) => setFormData({ ...formData, file: url })} />
-                <UploadForm onUpload={(url) => setFormData({ ...formData, file2: url })} />
-                <UploadForm onUpload={(url) => setFormData({ ...formData, file3: url })} />
+                
 
                 <div className="space-y-2">
                   <label className="block font-medium">Upload Property Video (Short)</label>
