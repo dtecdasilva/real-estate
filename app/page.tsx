@@ -117,8 +117,8 @@ export default function Hero() {
         {/* Logo */}
         <div className="flex items-center justify-between w-full md:w-auto">
           <div className="flex items-center ">
-            <div className="p-2 rounded-full">
-              <Image src="/logo.png" alt="Logo" width={60} height={24} />
+            <div className="p-1 rounded-full">
+              <Image src="/logo.png" alt="Logo" width={80} height={34} />
             </div>
             <span className="font-bold text-lg text-white">Brico</span>
           </div>
