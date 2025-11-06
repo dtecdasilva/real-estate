@@ -29,12 +29,7 @@ export default function Hero() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
-  const [uploadedImageUrl2, setUploadedImageUrl2] = useState('');
-  const [uploadedImageUrl3, setUploadedImageUrl3] = useState('');
-  const [uploadedImageUrl4, setUploadedImageUrl4] = useState('');
-  const [uploadedImageUrl5, setUploadedImageUrl5] = useState('');
-  const [uploadedImageUrl6, setUploadedImageUrl6] = useState('');
+  const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
   const { user } = useUser();
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -82,12 +77,7 @@ export default function Hero() {
       price: Number(form.price.value),
       createdAt: new Date(),
       email: form.email.value,
-      file: uploadedImageUrl,
-      file2: uploadedImageUrl2,
-      file3: uploadedImageUrl3,
-      file4: uploadedImageUrl4,
-      file5: uploadedImageUrl5,
-      file6: uploadedImageUrl6,
+      file: uploadedImageUrls,
       type: form.type.value,
       video: videoLink,
       availability: "open",
@@ -410,12 +400,7 @@ export default function Hero() {
         required
       />
       
-        <UploadForm onUpload={(url) => setUploadedImageUrl(url)} />
-        <UploadForm onUpload={(url) => setUploadedImageUrl2(url)} />
-        <UploadForm onUpload={(url) => setUploadedImageUrl3(url)} />
-        <UploadForm onUpload={(url) => setUploadedImageUrl4(url)} />
-        <UploadForm onUpload={(url) => setUploadedImageUrl5(url)} />
-        <UploadForm onUpload={(url) => setUploadedImageUrl6(url)} />
+      <UploadForm onUpload={(urls) => setUploadedImageUrls(urls)} />
 
       <div className="space-y-2">
         <label className="block font-medium">Upload Property Video (Short)</label>

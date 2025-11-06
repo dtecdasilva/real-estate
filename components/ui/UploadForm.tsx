@@ -3,21 +3,30 @@
 import { useState } from 'react';
 import { CldUploadWidget, CldImage, type CloudinaryUploadWidgetInfo } from 'next-cloudinary';
 
-export default function UploadForm({ onUpload }: { onUpload: (url: string) => void }) {
-  const [uploadedUrl, setUploadedUrl] = useState('');
+export default function UploadForm({
+  onUpload,
+}: {
+  onUpload: (urls: string[]) => void;
+}) {
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
   return (
     <div className="space-y-3">
       <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+        options={{
+          multiple: true, // ✅ allow multiple files
+          maxFiles: 10,   // optional limit
+          resourceType: 'image',
+        }}
         onSuccess={(result) => {
           const info = result?.info as CloudinaryUploadWidgetInfo;
           if (info?.secure_url) {
-            setUploadedUrl(info.secure_url);
-            onUpload(info.secure_url);
+            const newUrls = [...uploadedUrls, info.secure_url];
+            setUploadedUrls(newUrls);
+            onUpload(newUrls); // send all URLs
           }
-          setUploading(false);
         }}
         onQueuesStart={() => setUploading(true)}
         onQueuesEnd={() => setUploading(false)}
@@ -28,27 +37,24 @@ export default function UploadForm({ onUpload }: { onUpload: (url: string) => vo
             onClick={() => open()}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            {uploading ? 'Uploading...' : 'Upload Image'}
+            {uploading ? 'Uploading...' : 'Upload Images'}
           </button>
         )}
       </CldUploadWidget>
 
-      {uploadedUrl && (
-        <div className="mt-4 space-y-2">
-          <CldImage
-            alt="Uploaded image"
-            src={uploadedUrl}
-            width="300"
-            height="300"
-            className="rounded shadow-md"
-          />
-          <button
-            type="button"
-            onClick={() => setUploadedUrl('')}
-            className="text-blue-600 hover:underline"
-          >
-            Replace Image
-          </button>
+      {uploadedUrls.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+          {uploadedUrls.map((url, index) => (
+            <div key={index} className="relative">
+              <CldImage
+                alt={`Uploaded image ${index + 1}`}
+                src={url}
+                width="300"
+                height="300"
+                className="rounded shadow-md"
+              />
+            </div>
+          ))}
         </div>
       )}
     </div>
