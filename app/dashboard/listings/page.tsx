@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import UploadForm from "@/components/ui/UploadForm";
 // If not, import or create it properly
 
 interface Listing {
