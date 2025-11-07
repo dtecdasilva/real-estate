@@ -21,13 +21,24 @@ export default function UploadForm({
           resourceType: 'image',
         }}
         onSuccess={(result) => {
-          const info = result?.info as CloudinaryUploadWidgetInfo;
-          if (info?.secure_url) {
-            const newUrls = [...uploadedUrls, info.secure_url];
-            setUploadedUrls(newUrls);
-            onUpload(newUrls); // send all URLs
+          // If multiple files are uploaded, info will be an array
+          const info = result?.info as CloudinaryUploadWidgetInfo | CloudinaryUploadWidgetInfo[];
+        
+          let newUrls: string[] = [];
+        
+          if (Array.isArray(info)) {
+            newUrls = info.map((item) => item.secure_url);
+          } else if (info?.secure_url) {
+            newUrls = [info.secure_url];
+          }
+        
+          if (newUrls.length > 0) {
+            const updatedUrls = [...uploadedUrls, ...newUrls];
+            setUploadedUrls(updatedUrls);
+            onUpload(updatedUrls);
           }
         }}
+                
         onQueuesStart={() => setUploading(true)}
         onQueuesEnd={() => setUploading(false)}
       >
