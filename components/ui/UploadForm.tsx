@@ -1,13 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { CldUploadWidget, CldImage, type CloudinaryUploadWidgetInfo } from 'next-cloudinary';
+import { CldUploadWidget, CldImage } from 'next-cloudinary';
 
-export default function UploadForm({
-  onUpload,
-}: {
-  onUpload: (urls: string[]) => void;
-}) {
+export default function UploadForm({ onUpload }: { onUpload: (urls: string[]) => void }) {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
@@ -16,31 +12,21 @@ export default function UploadForm({
       <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
         options={{
-          multiple: true, // ✅ allow multiple files
-          maxFiles: 10,   // optional limit
+          multiple: true,
+          maxFiles: 10,
           resourceType: 'image',
         }}
+        onUploadAdded={() => setUploading(true)}
+        onUpload={() => setUploading(false)}
         onSuccess={(result) => {
-          // If multiple files are uploaded, info will be an array
-          const info = result?.info as CloudinaryUploadWidgetInfo | CloudinaryUploadWidgetInfo[];
-        
-          let newUrls: string[] = [];
-        
-          if (Array.isArray(info)) {
-            newUrls = info.map((item) => item.secure_url);
-          } else if (info?.secure_url) {
-            newUrls = [info.secure_url];
-          }
-        
-          if (newUrls.length > 0) {
-            const updatedUrls = [...uploadedUrls, ...newUrls];
+          // Cloudinary triggers this once per uploaded file
+          const info = result?.info as any;
+          if (info?.secure_url) {
+            const updatedUrls = [...uploadedUrls, info.secure_url];
             setUploadedUrls(updatedUrls);
             onUpload(updatedUrls);
           }
         }}
-                
-        onQueuesStart={() => setUploading(true)}
-        onQueuesEnd={() => setUploading(false)}
       >
         {({ open }) => (
           <button
