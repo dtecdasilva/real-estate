@@ -4,13 +4,42 @@ import { useState } from 'react';
 import {
   CldUploadWidget,
   CldImage,
-  type CloudinaryUploadWidgetInfo,
   type CloudinaryUploadWidgetResults,
 } from 'next-cloudinary';
 
-export default function UploadForm({ onUpload }: { onUpload: (urls: string[]) => void }) {
+export default function UploadForm({
+  onUpload,
+}: {
+  onUpload: (urls: string[]) => void;
+}) {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+
+  const handleSuccess = (result: CloudinaryUploadWidgetResults) => {
+    if (!result?.info) return;
+
+    // Cast to any because Cloudinary's typing doesn't include `files`
+    const info = result.info as any;
+
+    let urls: string[] = [];
+
+    if (Array.isArray(info)) {
+      // When multiple files are uploaded
+      urls = info.map((file: any) => file?.secure_url).filter(Boolean);
+    } else if (info.files) {
+      // When multiple uploads come under one info object
+      urls = info.files
+        .map((f: any) => f.uploadInfo?.secure_url)
+        .filter(Boolean);
+    } else if (info.secure_url) {
+      // Single upload fallback
+      urls = [info.secure_url];
+    }
+
+    const updatedUrls = [...uploadedUrls, ...urls];
+    setUploadedUrls(updatedUrls);
+    onUpload(updatedUrls);
+  };
 
   return (
     <div className="space-y-3">
@@ -23,14 +52,7 @@ export default function UploadForm({ onUpload }: { onUpload: (urls: string[]) =>
         }}
         onUploadAdded={() => setUploading(true)}
         onUpload={() => setUploading(false)}
-        onSuccess={(result: CloudinaryUploadWidgetResults) => {
-          const info = result?.info as CloudinaryUploadWidgetInfo | undefined;
-          if (info?.secure_url) {
-            const updatedUrls = [...uploadedUrls, info.secure_url];
-            setUploadedUrls(updatedUrls);
-            onUpload(updatedUrls);
-          }
-        }}
+        onSuccess={handleSuccess}
       >
         {({ open }) => (
           <button
@@ -46,15 +68,14 @@ export default function UploadForm({ onUpload }: { onUpload: (urls: string[]) =>
       {uploadedUrls.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {uploadedUrls.map((url, index) => (
-            <div key={index} className="relative">
-              <CldImage
-                alt={`Uploaded image ${index + 1}`}
-                src={url}
-                width="100"
-                height="100"
-                className="rounded shadow-md"
-              />
-            </div>
+            <CldImage
+              key={index}
+              alt={`Uploaded image ${index + 1}`}
+              src={url}
+              width="200"
+              height="200"
+              className="rounded shadow-md object-cover"
+            />
           ))}
         </div>
       )}
