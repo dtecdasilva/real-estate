@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Home, CheckCircle, MessageSquare, User } from "lucide-react";
 import AgentSidebar from "@/components/ui/agent-sidebar";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 interface Listing {
   id: string;
@@ -21,6 +23,7 @@ export default function AgentDashboard() {
   const { user } = useUser();
   const [listings, setListings] = useState<Listing[]>([]);
   const [recentListings, setRecentListings] = useState<Listing[]>([]);
+  const [verified, setVerified] = useState(false);
 
   const userEmail = user?.emailAddresses[0]?.emailAddress;
 
@@ -46,9 +49,28 @@ export default function AgentDashboard() {
     fetchListings();
   }, [userEmail]);
 
+  useEffect(() => {
+    if (!user) return;
+  
+    const fetchUserData = async () => {
+      try {
+        const docRef = doc(db, "users", user.id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();  
+          setVerified(data.verified || false); // <-- use the actual field
+        }
+      } catch (error) {
+        console.error("Failed to fetch user verification status:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, [user]);
+  
+
   const uploadedCount = listings.length;
   const reservedCount = listings.filter((l) => l.availability === "reserved").length;
-  const isVerified = user?.externalAccounts ? true : false; // replace with actual verification logic if needed
 
   return (
     <div className="flex min-h-screen bg-muted">
@@ -92,9 +114,9 @@ export default function AgentDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={`text-2xl font-bold ${isVerified ? "text-green-600" : "text-yellow-600"}`}>
-                {isVerified ? "Verified" : "Not Verified"}
-              </p>
+            <p className={`text-2xl font-bold ${verified ? "text-green-600" : "text-yellow-600"}`}>
+              {verified ? "Verified" : "Not Verified"}
+            </p>
             </CardContent>
           </Card>
 
