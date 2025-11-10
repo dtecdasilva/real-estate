@@ -34,9 +34,6 @@ export default function Hero() {
   const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string>("");
   const { user } = useUser();
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [videoLink, setVideoLink] = useState<string>("");
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchStatus = async () => {
