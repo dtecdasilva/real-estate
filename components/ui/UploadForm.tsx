@@ -1,7 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { CldUploadWidget, CldImage } from 'next-cloudinary';
+import {
+  CldUploadWidget,
+  CldImage,
+  type CloudinaryUploadWidgetInfo,
+  type CloudinaryUploadWidgetResults,
+} from 'next-cloudinary';
 
 export default function UploadForm({ onUpload }: { onUpload: (urls: string[]) => void }) {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
@@ -18,9 +23,8 @@ export default function UploadForm({ onUpload }: { onUpload: (urls: string[]) =>
         }}
         onUploadAdded={() => setUploading(true)}
         onUpload={() => setUploading(false)}
-        onSuccess={(result) => {
-          // Cloudinary triggers this once per uploaded file
-          const info = result?.info as any;
+        onSuccess={(result: CloudinaryUploadWidgetResults) => {
+          const info = result?.info as CloudinaryUploadWidgetInfo | undefined;
           if (info?.secure_url) {
             const updatedUrls = [...uploadedUrls, info.secure_url];
             setUploadedUrls(updatedUrls);
