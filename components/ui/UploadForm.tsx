@@ -7,7 +7,6 @@ import {
   type CloudinaryUploadWidgetResults,
 } from 'next-cloudinary';
 
-
 export default function UploadForm({
   onUpload,
 }: {
@@ -18,17 +17,19 @@ export default function UploadForm({
 
   const handleSuccess = (result: CloudinaryUploadWidgetResults) => {
     if (!result?.info) return;
-  
-    const info = result.info as any;
-    let url: string | undefined;
-  
-    // Cloudinary returns a single object for each upload
-    if (info.secure_url) {
-      url = info.secure_url;
-    } else if (info.uploadInfo?.secure_url) {
-      url = info.uploadInfo.secure_url;
+
+    // Define a safe, minimal type for the upload info
+    interface UploadInfo {
+      secure_url?: string;
+      uploadInfo?: {
+        secure_url?: string;
+      };
     }
-  
+
+    // Use the defined type instead of `any`
+    const info = result.info as UploadInfo;
+    const url = info.secure_url ?? info.uploadInfo?.secure_url;
+
     if (url) {
       const updatedUrls = [...uploadedUrls, url];
       setUploadedUrls(updatedUrls);
@@ -46,7 +47,7 @@ export default function UploadForm({
           resourceType: 'image',
         }}
         onUploadAdded={() => setUploading(true)}
-        onUpload={() => setUploading(false)}
+        onQueuesEnd={() => setUploading(false)}
         onSuccess={handleSuccess}
       >
         {({ open }) => (
