@@ -7,6 +7,14 @@ import {
   type CloudinaryUploadWidgetResults,
 } from 'next-cloudinary';
 
+// Define a custom interface for the upload info
+interface CloudinaryFileInfo {
+  secure_url?: string;
+  uploadInfo?: {
+    secure_url?: string;
+  };
+}
+
 export default function UploadForm({
   onUpload,
 }: {
@@ -18,21 +26,23 @@ export default function UploadForm({
   const handleSuccess = (result: CloudinaryUploadWidgetResults) => {
     if (!result?.info) return;
 
-    // Cast to any because Cloudinary's typing doesn't include `files`
-    const info = result.info as any;
+    const info = result.info as
+      | CloudinaryFileInfo
+      | { files?: CloudinaryFileInfo[] }
+      | CloudinaryFileInfo[];
 
     let urls: string[] = [];
 
     if (Array.isArray(info)) {
-      // When multiple files are uploaded
-      urls = info.map((file: any) => file?.secure_url).filter(Boolean);
-    } else if (info.files) {
-      // When multiple uploads come under one info object
+      // Case 1: info is an array of file info
+      urls = info.map((file) => file.secure_url).filter(Boolean) as string[];
+    } else if ('files' in info && Array.isArray(info.files)) {
+      // Case 2: info.files exists
       urls = info.files
-        .map((f: any) => f.uploadInfo?.secure_url)
-        .filter(Boolean);
-    } else if (info.secure_url) {
-      // Single upload fallback
+        .map((f) => f.uploadInfo?.secure_url)
+        .filter(Boolean) as string[];
+    } else if ('secure_url' in info && info.secure_url) {
+      // Case 3: single upload
       urls = [info.secure_url];
     }
 
