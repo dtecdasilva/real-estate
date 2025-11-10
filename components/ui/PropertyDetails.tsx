@@ -19,7 +19,7 @@ interface Listing {
   city: string;
   months: number;
   type: string;
-  file: string; // Image URL
+  file: string | string[];
   createdAt: Date;
 }
 interface PropertyDetailsProps {
@@ -276,10 +276,16 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 
                       {/* Image */}
                       <Image
-                        src={listing.file}
-                        alt={listing.title}
-                        className="w-full h-56 object-cover block"
-                      />
+                          src={
+                            Array.isArray(listing.file)
+                              ? listing.file[0] // ✅ first image in array
+                              : listing.file || "/placeholder.jpg" // fallback if old listing or missing
+                          }
+                          alt={listing.title}
+                          width={600}
+                          height={400}
+                          className="w-full h-56 object-cover block"
+                        />
 
                       <CardContent className="px-6 py-3">
                         <h2 className="text-xl font-semibold text-gray-900">
