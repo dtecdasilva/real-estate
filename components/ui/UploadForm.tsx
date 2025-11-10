@@ -36,9 +36,9 @@ export default function UploadForm({
     if (Array.isArray(info)) {
       // Case 1: info is an array of file info
       urls = info.map((file) => file.secure_url).filter(Boolean) as string[];
-    } else if ('files' in info && Array.isArray(info.files)) {
+    } else if ('file' in info && Array.isArray(info.file)) {
       // Case 2: info.files exists
-      urls = info.files
+      urls = info.file
         .map((f) => f.uploadInfo?.secure_url)
         .filter(Boolean) as string[];
     } else if ('secure_url' in info && info.secure_url) {
