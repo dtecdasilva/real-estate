@@ -7,13 +7,6 @@ import {
   type CloudinaryUploadWidgetResults,
 } from 'next-cloudinary';
 
-// Define a custom interface for the upload info
-interface CloudinaryFileInfo {
-  secure_url?: string;
-  uploadInfo?: {
-    secure_url?: string;
-  };
-}
 
 export default function UploadForm({
   onUpload,
