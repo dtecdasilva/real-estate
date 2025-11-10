@@ -22,6 +22,9 @@ export default function UploadForm({
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
+  // Temporary array to hold all uploads within one widget session
+  const tempUrls: string[] = [];
+
   const handleSuccess = (result: CloudinaryUploadWidgetResults) => {
     if (!result?.info) return;
 
@@ -29,15 +32,15 @@ export default function UploadForm({
     const url = info.secure_url ?? info.uploadInfo?.secure_url;
 
     if (url) {
-      // Just update the local list; don't call onUpload yet
+      tempUrls.push(url);
       setUploadedUrls((prev) => [...prev, url]);
     }
   };
 
   const handleAllUploadsComplete = () => {
     setUploading(false);
-    // Call onUpload only once, with the final list
-    onUpload(uploadedUrls);
+    // Send the full list of URLs to the parent
+    onUpload([...uploadedUrls, ...tempUrls]);
   };
 
   return (
