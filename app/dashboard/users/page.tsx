@@ -15,7 +15,7 @@ interface FirebaseUser {
   email: string;
   role: string;
   profileImage: string;
-  idDocumentImage: string;
+  idDocument: string;
   submittedAt: string;
   verified: boolean;
   whatsapp?: string;
@@ -174,12 +174,12 @@ export default function AdminsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <Image
-                      src={user.idDocumentImage}
+                      src={user.idDocument}
                       alt="ID"
                       width={40}
                       height={40}
                       className="rounded border shadow cursor-pointer"
-                      onClick={() => setSelectedImage(user.idDocumentImage)}
+                      onClick={() => setSelectedImage(user.idDocument)}
                     />
                   </td>
                   <td className="px-4 py-3">
