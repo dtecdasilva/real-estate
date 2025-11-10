@@ -20,9 +20,7 @@ type Listing = {
   type: string;
   price: number;
   months: string;
-  file: string;
-  file2?: string;
-  file3?: string;
+  file: string[];
   video?: string;
   availability: string;
   email?: string; 
@@ -44,9 +42,10 @@ const ListingPage = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-const images = [listing?.file, listing?.file2, listing?.file3]
-  .filter((url): url is string => Boolean(url))
-  .map((url) => ({ src: url }));
+  const images = Array.isArray(listing?.file)
+  ? listing.file.map((url) => ({ src: url }))
+  : [];
+
 
   // Fetch the listing details
   useEffect(() => {
@@ -258,51 +257,44 @@ const images = [listing?.file, listing?.file2, listing?.file3]
 </div>
 
         {/* Images */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div
-            className="md:col-span-2 cursor-pointer"
-            onClick={() => { setLightboxOpen(true); setLightboxIndex(0); }}
-          >
-            <Image
-              src={listing.file}
-              alt="Main"
-              width={800}
-              height={500}
-              className="w-full h-[400px] object-cover rounded-xl shadow"
-            />
-          </div>
+        {/* Images Section */}
+{listing.file && Array.isArray(listing.file) && listing.file.length > 0 && (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {/* Main Image */}
+    <div
+      className="md:col-span-2 cursor-pointer"
+      onClick={() => { setLightboxOpen(true); setLightboxIndex(0); }}
+    >
+      <Image
+        src={listing.file[0]}
+        alt="Main image"
+        width={800}
+        height={500}
+        className="w-full h-[400px] object-cover rounded-xl shadow"
+      />
+    </div>
 
-          <div className="grid grid-rows-2 gap-2 h-[400px]">
-            {listing.file2 && (
-              <div
-                className="cursor-pointer"
-                onClick={() => { setLightboxOpen(true); setLightboxIndex(1); }}
-              >
-                <Image
-                  src={listing.file2}
-                  alt="Gallery 2"
-                  width={400}
-                  height={200}
-                  className="w-full h-full object-cover rounded-xl shadow"
-                />
-              </div>
-            )}
-            {listing.file3 && (
-              <div
-                className="cursor-pointer"
-                onClick={() => { setLightboxOpen(true); setLightboxIndex(2); }}
-              >
-                <Image
-                  src={listing.file3}
-                  alt="Gallery 3"
-                  width={400}
-                  height={200}
-                  className="w-full h-full object-cover rounded-xl shadow"
-                />
-              </div>
-            )}
-          </div>
+    {/* Small Thumbnails */}
+    <div className="grid grid-rows-2 gap-2 h-[400px]">
+      {listing.file.slice(1, 3).map((imgUrl, index) => (
+        <div
+          key={index}
+          className="cursor-pointer"
+          onClick={() => { setLightboxOpen(true); setLightboxIndex(index + 1); }}
+        >
+          <Image
+            src={imgUrl}
+            alt={`Gallery image ${index + 2}`}
+            width={400}
+            height={200}
+            className="w-full h-full object-cover rounded-xl shadow"
+          />
         </div>
+      ))}
+    </div>
+  </div>
+)}
+
 
         {lightboxOpen && (
           <Lightbox
@@ -397,62 +389,70 @@ const images = [listing?.file, listing?.file2, listing?.file3]
           </div>
         </div>
         {recommendedListings.length > 0 && (
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Recommended Listings
-          </h2>
+  <div className="mt-16">
+    <h2 className="text-2xl font-bold text-gray-900 mb-6">
+      Recommended Listings
+    </h2>
 
+    <div
+      className="
+        flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory 
+        scrollbar-hide pb-4
+      "
+    >
+      {recommendedListings.map((rec) => {
+        // ✅ Handle both array and string cases
+        const mainImage = Array.isArray(rec.file)
+          ? rec.file[0] // first image in array
+          : rec.file; // fallback if it's an old single string
+
+        return (
           <div
+            key={rec.id}
             className="
-              flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory 
-              scrollbar-hide pb-4
+              bg-white rounded-2xl shadow-md overflow-hidden 
+              hover:shadow-lg transition relative 
+              min-w-[80%] sm:min-w-[50%] md:min-w-[33%] lg:min-w-[25%] 
+              snap-center
             "
           >
-            {recommendedListings.map((rec) => (
-              <div
-                key={rec.id}
-                className="
-                  bg-white rounded-2xl shadow-md overflow-hidden 
-                  hover:shadow-lg transition relative 
-                  min-w-[80%] sm:min-w-[50%] md:min-w-[33%] lg:min-w-[25%] 
-                  snap-center
-                "
-              >
-                <div className="relative">
-                  <Image
-                    src={rec.file}
-                    alt={rec.title}
-                    width={400}
-                    height={250}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-4 right-4 bg-yellow-200 text-gray-900 text-xs font-semibold px-3 py-1 rounded-full z-10 shadow">
-                    {rec.type}
-                  </div>
-                </div>
-
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {rec.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm">
-                    {rec.address}, {rec.city}
-                  </p>
-                  <p className="text-blue-600 font-bold mt-2">
-                    FCFA {rec.price.toLocaleString()}
-                  </p>
-                  <Button
-                    onClick={() => (window.location.href = `/property/${rec.id}`)}
-                    className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700 text-sm"
-                  >
-                    View Property
-                  </Button>
-                </div>
+            <div className="relative">
+              <Image
+                src={mainImage || '/placeholder.jpg'}
+                alt={rec.title}
+                width={400}
+                height={250}
+                className="w-full h-48 object-cover"
+              />
+              <div className="absolute top-4 right-4 bg-yellow-200 text-gray-900 text-xs font-semibold px-3 py-1 rounded-full z-10 shadow">
+                {rec.type}
               </div>
-            ))}
+            </div>
+
+            <div className="p-4">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {rec.title}
+              </h3>
+              <p className="text-gray-500 text-sm">
+                {rec.address}, {rec.city}
+              </p>
+              <p className="text-blue-600 font-bold mt-2">
+                FCFA {rec.price.toLocaleString()}
+              </p>
+              <Button
+                onClick={() => (window.location.href = `/property/${rec.id}`)}
+                className="mt-3 w-full bg-blue-600 text-white hover:bg-blue-700 text-sm"
+              >
+                View Property
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })}
+    </div>
+  </div>
+)}
+
 
 
       </div>
