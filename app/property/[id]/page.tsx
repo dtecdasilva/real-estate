@@ -258,12 +258,16 @@ const ListingPage = () => {
 
         {/* Images */}
         {/* Images Section */}
+{/* Images Section */}
 {listing.file && Array.isArray(listing.file) && listing.file.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-    {/* Main Image */}
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+    {/* Main / First Image */}
     <div
-      className="md:col-span-2 cursor-pointer"
-      onClick={() => { setLightboxOpen(true); setLightboxIndex(0); }}
+      className="md:col-span-2 cursor-pointer relative"
+      onClick={() => {
+        setLightboxOpen(true);
+        setLightboxIndex(0);
+      }}
     >
       <Image
         src={listing.file[0]}
@@ -274,26 +278,50 @@ const ListingPage = () => {
       />
     </div>
 
-    {/* Small Thumbnails */}
+    {/* Thumbnails Section */}
     <div className="grid grid-rows-2 gap-2 h-[400px]">
-      {listing.file.slice(1, 3).map((imgUrl, index) => (
-        <div
-          key={index}
-          className="cursor-pointer"
-          onClick={() => { setLightboxOpen(true); setLightboxIndex(index + 1); }}
-        >
-          <Image
-            src={imgUrl}
-            alt={`Gallery image ${index + 2}`}
-            width={400}
-            height={200}
-            className="w-full h-full object-cover rounded-xl shadow"
-          />
-        </div>
-      ))}
+      {listing.file.slice(1, 3).map((imgUrl, index) => {
+        const isLastVisible = index === 1 && listing.file.length > 3;
+        const remainingCount = listing.file.length - 3;
+
+        return (
+          <div
+            key={index}
+            className="relative cursor-pointer"
+            onClick={() => {
+              setLightboxOpen(true);
+              setLightboxIndex(index + 1);
+            }}
+          >
+            <Image
+              src={imgUrl}
+              alt={`Gallery image ${index + 2}`}
+              width={400}
+              height={200}
+              className="w-full h-full object-cover rounded-xl shadow"
+            />
+
+            {/* +N Overlay */}
+            {isLastVisible && (
+              <div
+                className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl"
+                onClick={() => {
+                  setLightboxOpen(true);
+                  setLightboxIndex(index + 1);
+                }}
+              >
+                <span className="text-white text-3xl font-bold">
+                  +{remainingCount}
+                </span>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   </div>
 )}
+
 
 
         {lightboxOpen && (
