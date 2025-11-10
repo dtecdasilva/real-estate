@@ -46,8 +46,8 @@ export default function UploadForm({ onUpload }: { onUpload: (urls: string[]) =>
               <CldImage
                 alt={`Uploaded image ${index + 1}`}
                 src={url}
-                width="300"
-                height="300"
+                width="100"
+                height="100"
                 className="rounded shadow-md"
               />
             </div>
