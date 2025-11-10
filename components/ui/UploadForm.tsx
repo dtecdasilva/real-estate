@@ -25,30 +25,22 @@ export default function UploadForm({
 
   const handleSuccess = (result: CloudinaryUploadWidgetResults) => {
     if (!result?.info) return;
-
-    const info = result.info as
-      | CloudinaryFileInfo
-      | { files?: CloudinaryFileInfo[] }
-      | CloudinaryFileInfo[];
-
-    let urls: string[] = [];
-
-    if (Array.isArray(info)) {
-      // Case 1: info is an array of file info
-      urls = info.map((file) => file.secure_url).filter(Boolean) as string[];
-    } else if ('file' in info && Array.isArray(info.file)) {
-      // Case 2: info.files exists
-      urls = info.file
-        .map((f) => f.uploadInfo?.secure_url)
-        .filter(Boolean) as string[];
-    } else if ('secure_url' in info && info.secure_url) {
-      // Case 3: single upload
-      urls = [info.secure_url];
+  
+    const info = result.info as any;
+    let url: string | undefined;
+  
+    // Cloudinary returns a single object for each upload
+    if (info.secure_url) {
+      url = info.secure_url;
+    } else if (info.uploadInfo?.secure_url) {
+      url = info.uploadInfo.secure_url;
     }
-
-    const updatedUrls = [...uploadedUrls, ...urls];
-    setUploadedUrls(updatedUrls);
-    onUpload(updatedUrls);
+  
+    if (url) {
+      const updatedUrls = [...uploadedUrls, url];
+      setUploadedUrls(updatedUrls);
+      onUpload(updatedUrls);
+    }
   };
 
   return (
