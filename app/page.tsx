@@ -404,53 +404,6 @@ export default function Hero() {
       
       <UploadForm onUpload={(urls) => setUploadedImageUrls(urls)} />
       <VideoUploadForm onUpload={(url) => setUploadedVideoUrl(url)} />
-
-      <div className="space-y-2">
-        <label className="block font-medium">Upload Property Video (Short)</label>
-        <input
-          type="file"
-          accept="video/*"
-          onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
-          className="w-full border p-2 rounded"
-        />
-
-        <Button
-          type="button"
-          className="bg-green-600 text-white w-full"
-          disabled={!videoFile || uploading}
-          onClick={async () => {
-            if (!videoFile) return;
-            setUploading(true);
-
-            try {
-              const formData = new FormData();
-              formData.append("file", videoFile);
-
-              const res = await fetch("/api/upload-video", {
-                method: "POST",
-                body: formData,
-              });
-
-              const data = await res.json();
-              setVideoLink(data.videoLink);
-              alert("Video uploaded! Link: " + data.videoLink);
-            } catch (err) {
-              console.error(err);
-              alert("Failed to upload video.");
-            } finally {
-              setUploading(false);
-            }
-          }}
-        >
-          {uploading ? "Uploading..." : "Upload to YouTube"}
-        </Button>
-
-        {videoLink && (
-          <p className="text-sm text-green-600">
-            Uploaded! Link: <a href={videoLink} target="_blank" className="underline">{videoLink}</a>
-          </p>
-        )}
-      </div>
       <Button type="submit" className="bg-blue-600 text-white w-full">
         Submit Listing
       </Button>
