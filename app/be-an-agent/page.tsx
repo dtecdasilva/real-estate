@@ -53,6 +53,7 @@ export default function BeAnAgent() {
             </h2>
             <p className="text-gray-600 leading-relaxed">
               After creating an account, go to your dashboard and click on <b>Profile</b>. Upload the required documents and our team will verify your details within 24–48 hours.
+              <br/> 
             </p>
           </section>
 
@@ -64,6 +65,16 @@ export default function BeAnAgent() {
             <p className="text-gray-600 leading-relaxed">
               Once verified, you can start adding property listings, upload photos, and manage your listings directly from your dashboard.
             </p>
+            {/* SmartCue Video Tutorial under Step 2 */}
+            <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg border">
+              <iframe
+                src="https://embed.getsmartcue.com/IL0NV990"
+                title="How to get verified as an agent"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0"
+              />
+            </div>
           </section>
 
           {/* Video Tutorial */}
