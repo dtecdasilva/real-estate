@@ -11,7 +11,7 @@ export default function ContactSection() {
           <div className="flex justify-between items-center bg-white p-6 shadow-sm rounded">
             <div>
               <h3 className="font-bold text-xl">Call Us</h3>
-              <p className="text-gray-600">+237 671 54 33 08</p>
+              <p className="text-gray-600">+237 671 53 42 24</p>
             </div>
             <PhoneCall className="text-orange-500 w-10 h-10" />
           </div>
@@ -20,7 +20,7 @@ export default function ContactSection() {
           <div className="flex justify-between items-center bg-white p-6 shadow-sm rounded">
             <div>
               <h3 className="font-bold text-xl">Email</h3>
-              <p className="text-gray-600">dtecdasilva@gmail.com</p>
+              <p className="text-gray-600">mybrico237@gmail.com</p>
             </div>
             <Mail className="text-blue-500 w-10 h-10" />
           </div>
@@ -66,16 +66,18 @@ export default function ContactSection() {
       </div>
 
       {/* Map */}
-      <div className="mt-12 px-30">
-        <iframe
-          src="https://www.google.com/maps?q=carrefour+bastos+yaounde&output=embed"
-          width="100%"
-          height="300"
-          className="rounded-md border"
-          allowFullScreen
-          loading="lazy"
-        ></iframe>
+      <div className="mt-12 px-4 sm:px-6 lg:px-12">
+        <div className="w-full h-64 sm:h-80 lg:h-96 rounded-md overflow-hidden border">
+          <iframe
+            src="https://www.google.com/maps?q=carrefour+bastos+yaounde&output=embed"
+            width="100%"
+            height="100%"
+            className="w-full h-full rounded-md"
+            allowFullScreen
+            loading="lazy"
+          ></iframe>
+        </div>
       </div>
-    </section>
+    </section>  
   );
 }
