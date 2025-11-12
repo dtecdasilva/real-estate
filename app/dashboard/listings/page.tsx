@@ -34,8 +34,6 @@ export default function ListingsPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
   const [formData, setFormData] = useState<Partial<Listing>>({});
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [expandedListings, setExpandedListings] = useState<string[]>([]);
   const itemsPerPage = 5;
 
