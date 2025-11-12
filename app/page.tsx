@@ -113,7 +113,7 @@ export default function Hero() {
       <div className="relative z-10 px-4 md:px-40 py-12 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Logo */}
         <div className="flex items-center justify-between w-full md:w-auto">
-          <div className="flex items-center ">
+          <div className="flex items-center space-x-1"> {/* Added small gap */}
             <div className="p-1 rounded-full">
               <Image src="/logo.png" alt="Logo" width={80} height={34} />
             </div>
