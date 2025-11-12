@@ -167,7 +167,7 @@ export default function ListingsPage() {
                 <th className="px-4 py-3">City</th>
                 <th className="px-4 py-3">Availability</th>
                 <th className="px-4 py-3">Description</th>
-                <th className="px-4 py-3">Files</th>
+                {/* <th className="px-4 py-3">Files</th> */}
                 <th className="px-4 py-3">Created</th>
                 <th className="px-4 py-3">Action</th>
               </tr>
@@ -198,7 +198,7 @@ export default function ListingsPage() {
                     )}
                   </td>
                   <td className="px-4 py-3 flex gap-1">
-                    {[l.file, l.file2, l.file3].map((file, idx) => (
+                    {/* {[l.file, l.file2, l.file3].map((file, idx) => (
                       <Image
                         key={idx}
                         src={file || "/placeholder.png"}
@@ -208,7 +208,7 @@ export default function ListingsPage() {
                         className="rounded border shadow cursor-pointer"
                         onClick={() => setSelectedImage(file)}
                       />
-                    ))}
+                    ))} */}
                   </td>
                   <td className="px-4 py-3 text-xs">{new Date(l.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
@@ -401,39 +401,7 @@ export default function ListingsPage() {
 
                 
 
-                <div className="space-y-2">
-                  <label className="block font-medium">Upload Property Video (Short)</label>
-                  <input
-                    type="file"
-                    accept="video/*"
-                    onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
-                    className="w-full border p-2 rounded"
-                  />
-                  <Button
-                    type="button"
-                    className="bg-green-600 text-white w-full"
-                    disabled={!videoFile || uploading}
-                    onClick={async () => {
-                      if (!videoFile) return;
-                      setUploading(true);
-                      try {
-                        const data = new FormData();
-                        data.append("file", videoFile);
-                        const res = await fetch("/api/upload-video", { method: "POST", body: data });
-                        const result = await res.json();
-                        setFormData((prev) => ({ ...prev, video: result.videoLink }));
-                        alert("Video uploaded!");
-                      } catch (err) {
-                        console.error(err);
-                        alert("Failed to upload video.");
-                      } finally {
-                        setUploading(false);
-                      }
-                    }}
-                  >
-                    {uploading ? "Uploading..." : "Upload to YouTube"}
-                  </Button>
-                </div>
+                
               </div>
 
               {/* Buttons */}
