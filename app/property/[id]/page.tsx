@@ -54,7 +54,7 @@ const ListingPage = () => {
         const docRef = doc(db, "listings", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setListing(docSnap.data() as Listing);
+          setListing({ id: docSnap.id, ...docSnap.data() } as Listing);
         }
         else {
           console.error("No such document!");
