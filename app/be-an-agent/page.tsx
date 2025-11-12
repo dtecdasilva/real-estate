@@ -53,7 +53,7 @@ export default function BeAnAgent() {
             </h2>
             <p className="text-gray-600 leading-relaxed">
               After creating an account, go to your dashboard and click on <b>Profile</b>. Upload the required documents and our team will verify your details within 24–48 hours.
-            </p>
+            </p> <p>Watch the showcase below</p><br />
             <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg border">
               <iframe
                 src="https://embed.getsmartcue.com/IL0NV990"
@@ -77,20 +77,7 @@ export default function BeAnAgent() {
           </section>
 
           {/* Video Tutorial */}
-          <section>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              🎥 Video: How to Log In and Add Your First Listing
-            </h2>
-            <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg border">
-              <iframe
-                src="https://embed.getsmartcue.com/IRAETJPA"
-                title="How to sign up and log in"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full border-0"
-              />
-            </div>
-          </section>
+          
         </div>
 
         {/* Contact Section */}
