@@ -269,7 +269,7 @@ export default function Hero() {
     </section>
     {/* Floating WhatsApp button (paste before </main>) */}
     <a
-      href="https://wa.me/237671543308"
+      href="https://wa.me/237671534224"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
