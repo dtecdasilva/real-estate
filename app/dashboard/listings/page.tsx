@@ -64,7 +64,7 @@ export default function ListingsPage() {
         }
       } catch (err) {
         console.error("Failed to fetch listings:", err);
-      }
+      } 
     }
 
     if (userEmail) fetchListings();
@@ -326,7 +326,7 @@ export default function ListingsPage() {
                   required
                 >
                   <option value="">Select the type of house</option>
-                  {["Chambre Moderne", "Studio", "Apartment", "House-For-Sale", "Guest-House", "Land"].map(
+                  {["Chambre Moderne", "Studio", "Apartment", "House-For-Sale", "Guest-House", "Land", "Shop"].map(
                     (type) => (
                       <option key={type}>{type}</option>
                     )
@@ -384,7 +384,7 @@ export default function ListingsPage() {
                   <option value={formData.availability || ""}>
                     {formData.availability || "Select availability"}
                   </option>
-                  {["Open", "Reserved", "Gone"]
+                  {["open", "reserved", "gone"]
                     .filter((opt) => opt !== formData.availability)
                     .map((opt) => (
                       <option key={opt}>{opt}</option>
