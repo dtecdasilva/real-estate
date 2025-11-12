@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import ContactSection from '../ContactSection';
-import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
 
 export default function BeAnAgent() {
