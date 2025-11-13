@@ -46,6 +46,17 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (!user) return;
+
+    if (!profileImage) {
+      alert("Please upload a profile image before saving.");
+      return;
+    }
+
+    if (!idDocument) {
+      alert("Please upload a profile image before saving.");
+      return;
+    }  
+  
     const [firstName, ...rest] = fullName.trim().split(" ");
     const lastName = rest.join(" ");
 
