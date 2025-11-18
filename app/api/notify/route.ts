@@ -21,10 +21,10 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ status: "success" });
-  } catch (err: any) {
+    } catch (err: unknown) {
     console.error("Email error:", err);
     return NextResponse.json(
-      { error: err.message },
+      { error: err instanceof Error ? err.message : "Unknown error occurred" },
       { status: 500 }
     );
   }
