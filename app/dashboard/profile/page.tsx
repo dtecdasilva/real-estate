@@ -75,6 +75,18 @@ export default function ProfilePage() {
         submittedAt: new Date(),
       });
 
+      // ⬇️ ADD THIS PART HERE
+      await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email: user.emailAddresses[0]?.emailAddress,
+          whatsapp,
+        }),
+      });
+
       alert("Details saved successfully!");
     } catch (err) {
       console.error("Error saving to Firebase:", err);
