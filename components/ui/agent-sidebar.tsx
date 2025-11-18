@@ -69,7 +69,7 @@ export default function AgentSidebar() {
           {(role === "sadmin" || role === "admin") && (
             <SidebarLink 
               icon={<Phone className="w-4 h-4" />} 
-              label="Reserved" 
+              label="Contacts" 
               href="/dashboard/contacts" 
             />
           )}
