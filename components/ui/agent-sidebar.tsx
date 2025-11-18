@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { LayoutDashboard, Home, User, Users, Menu, X, Phone } from "lucide-react";
+import { LayoutDashboard, Home, User, Users, Menu, X } from "lucide-react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";   // ⬅️ your Firestore config
 import { useUser } from "@clerk/nextjs"; // ⬅️ or your auth hook
@@ -64,15 +64,9 @@ export default function AgentSidebar() {
           <SidebarLink icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" href="/dashboard" />
 
           {(role === "sadmin" || role === "admin") && (
-            <SidebarLink icon={<Users className="w-4 h-4" />} label="Users" href="/dashboard/users" />
+            <SidebarLink icon={<Users className="w-4 h-4" />} label="User" href="/dashboard/users" />
           )}
-          {(role === "sadmin" || role === "admin") && (
-            <SidebarLink 
-              icon={<Phone className="w-4 h-4" />} 
-              label="Contacts" 
-              href="/dashboard/contacts" 
-            />
-          )}
+          
           <SidebarLink icon={<Home className="w-4 h-4" />} label="Listings" href="/dashboard/listings" />
           <SidebarLink icon={<User className="w-4 h-4" />} label="Profile" href="/dashboard/profile" />
         </nav>
