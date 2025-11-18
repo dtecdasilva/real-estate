@@ -56,17 +56,26 @@ export default function ListingsPage() {
         const res = await fetch("/api/get-listings");
         const data = await res.json();
         if (Array.isArray(data)) {
-          const userListings = data.filter((l: Listing) => l.email === userEmail);
+          // Get user role
+          const userRole = (user as any)?.publicMetadata?.role || "agent";
+  
+          const userListings =
+            userRole === "sadmin" || userRole === "admin"
+              ? data // show all listings
+              : data.filter((l: Listing) => l.email === userEmail); // agents see only theirs
+  
           setListings(userListings);
           setFilteredListings(userListings);
         }
       } catch (err) {
         console.error("Failed to fetch listings:", err);
-      } 
+      }
     }
-
+  
     if (userEmail) fetchListings();
-  }, [userEmail]);
+  }, [userEmail, user]);
+  
+  
 
   // ✅ Search filter
   useEffect(() => {
