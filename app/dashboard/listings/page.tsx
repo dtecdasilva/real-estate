@@ -57,7 +57,7 @@ export default function ListingsPage() {
         const data = await res.json();
         if (Array.isArray(data)) {
           // Get user role
-          const userRole = (user as any)?.publicMetadata?.role || "agent";
+          const userRole = (user && "publicMetadata" in user && (user.publicMetadata as { role?: string }).role) || "agent";
   
           const userListings =
             userRole === "sadmin" || userRole === "admin"
