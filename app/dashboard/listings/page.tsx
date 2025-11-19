@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 // If not, import or create it properly
 
 interface Listing {
@@ -51,33 +53,35 @@ export default function ListingsPage() {
 
   // ✅ Fetch listings from API
   useEffect(() => {
-    if (!userEmail) return;
+    if (!user?.id || !userEmail) return;
   
-    const fetchListings = async () => {
+    const fetchData = async () => {
       try {
+        // 1. Get user role from Firestore
+        const userRef = doc(db, "users", user.id);
+        const userSnap = await getDoc(userRef);
+        const role = userSnap.exists() ? userSnap.data().role : "agent";
+  
+        // 2. Fetch listings
         const res = await fetch("/api/get-listings");
-        const data = await res.json();
+        const listings = await res.json();
   
-        if (!Array.isArray(data)) return;
-  
-        // Get user role (defaults to "agent")
-        const role = user?.publicMetadata?.role ?? "agent";
-  
-        // Filter listings based on role
-        const userListings =
+        // 3. Filter based on role
+        const visibleListings =
           role === "admin" || role === "sadmin"
-            ? data
-            : data.filter((l: Listing) => l.email === userEmail);
+            ? listings
+            : listings.filter((l: any) => l.email === userEmail);
   
-        setListings(userListings);
-        setFilteredListings(userListings);
-      } catch (err) {
-        console.error("Failed to fetch listings:", err);
+        setListings(visibleListings);
+        setFilteredListings(visibleListings);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
   
-    fetchListings();
-  }, [userEmail, user]);  
+    fetchData();
+  }, [user, userEmail]);
+    
   
   
 
