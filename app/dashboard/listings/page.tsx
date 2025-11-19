@@ -51,29 +51,33 @@ export default function ListingsPage() {
 
   // ✅ Fetch listings from API
   useEffect(() => {
-    async function fetchListings() {
+    if (!userEmail) return;
+  
+    const fetchListings = async () => {
       try {
         const res = await fetch("/api/get-listings");
         const data = await res.json();
-        if (Array.isArray(data)) {
-          // Get user role
-          const userRole = (user && "publicMetadata" in user && (user.publicMetadata as { role?: string }).role) || "agent";
   
-          const userListings =
-            userRole === "sadmin" || userRole === "admin"
-              ? data // show all listings
-              : data.filter((l: Listing) => l.email === userEmail); // agents see only theirs
+        if (!Array.isArray(data)) return;
   
-          setListings(userListings);
-          setFilteredListings(userListings);
-        }
+        // Get user role (defaults to "agent")
+        const role = user?.publicMetadata?.role ?? "agent";
+  
+        // Filter listings based on role
+        const userListings =
+          role === "admin" || role === "sadmin"
+            ? data
+            : data.filter((l: Listing) => l.email === userEmail);
+  
+        setListings(userListings);
+        setFilteredListings(userListings);
       } catch (err) {
         console.error("Failed to fetch listings:", err);
       }
-    }
+    };
   
-    if (userEmail) fetchListings();
-  }, [userEmail, user]);
+    fetchListings();
+  }, [userEmail, user]);  
   
   
 
