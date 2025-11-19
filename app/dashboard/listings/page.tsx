@@ -217,8 +217,8 @@ export default function ListingsPage() {
                       </button>
                     )}
                   </td>
-                  <td className="px-4 py-3 flex gap-1">
-                    {/* {[l.file, l.file2, l.file3].map((file, idx) => (
+                  {/* <td className="px-4 py-3 flex gap-1">
+                    {[l.file, l.file2, l.file3].map((file, idx) => (
                       <Image
                         key={idx}
                         src={file || "/placeholder.png"}
@@ -228,8 +228,8 @@ export default function ListingsPage() {
                         className="rounded border shadow cursor-pointer"
                         onClick={() => setSelectedImage(file)}
                       />
-                    ))} */}
-                  </td>
+                    ))}
+                  </td> */}
                   <td className="px-4 py-3 text-xs">{new Date(l.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-xs">
                     <a href={l.video} download className="text-blue-500 underline">
