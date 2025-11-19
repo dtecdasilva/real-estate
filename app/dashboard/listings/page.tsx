@@ -49,7 +49,7 @@ export default function ListingsPage() {
         : [...prev, id]
     );
   };
-  
+
   useEffect(() => {
     if (!user?.id) return;
   
@@ -188,6 +188,7 @@ export default function ListingsPage() {
                 <th className="px-4 py-3">Description</th>
                 {/* <th className="px-4 py-3">Files</th> */}
                 <th className="px-4 py-3">Created</th>
+                <th className="px-4 py-3">Video</th>
                 <th className="px-4 py-3">Action</th>
               </tr>
             </thead>
@@ -230,6 +231,11 @@ export default function ListingsPage() {
                     ))} */}
                   </td>
                   <td className="px-4 py-3 text-xs">{new Date(l.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-xs">
+                    <a href={l.video} download className="text-blue-500 underline">
+                      {l.video.split('/').pop()} {/* This will show the file name */}
+                    </a>
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <Button
