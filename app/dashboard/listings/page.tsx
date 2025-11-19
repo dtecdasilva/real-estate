@@ -29,6 +29,8 @@ interface Listing {
 }
 
 export default function ListingsPage() {
+  const { user } = useUser();                  // current auth user
+  const [role, setRole] = useState<string>();  // Firestore role
   const [listings, setListings] = useState<Listing[]>([]);
   const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   const [search, setSearch] = useState("");
@@ -39,9 +41,6 @@ export default function ListingsPage() {
   const [expandedListings, setExpandedListings] = useState<string[]>([]);
   const itemsPerPage = 5;
 
-  const { user } = useUser();
-  const userEmail = user?.emailAddresses[0]?.emailAddress;
-
   // ✅ Toggle description show/hide
   const toggleDescription = (id: string) => {
     setExpandedListings(prev =>
@@ -50,37 +49,42 @@ export default function ListingsPage() {
         : [...prev, id]
     );
   };
-
-  // ✅ Fetch listings from API
+  
   useEffect(() => {
-    if (!user?.id || !userEmail) return;
+    if (!user?.id) return;
   
-    const fetchData = async () => {
-      try {
-        // 1. Get user role from Firestore
-        const userRef = doc(db, "users", user.id);
-        const userSnap = await getDoc(userRef);
-        const role = userSnap.exists() ? userSnap.data().role : "agent";
+    const fetchRole = async () => {
+      const ref = doc(db, "users", user.id);
+      const snap = await getDoc(ref);
   
-        // 2. Fetch listings
-        const res = await fetch("/api/get-listings");
-        const listings = await res.json();
-  
-        // 3. Filter based on role
-        const visibleListings =
-          role === "admin" || role === "sadmin"
-            ? listings
-            : listings.filter((l: any) => l.email === userEmail);
-  
-        setListings(visibleListings);
-        setFilteredListings(visibleListings);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (snap.exists()) {
+        setRole(snap.data().role);
       }
     };
   
-    fetchData();
-  }, [user, userEmail]);
+    fetchRole();
+  }, [user?.id]);
+  // ✅ Fetch listings from API
+  useEffect(() => {
+    if (!role || !user) return;
+  
+    const fetchListings = async () => {
+      const res = await fetch("/api/get-listings");
+      const data: Listing[] = await res.json();
+  
+      const userEmail = user.primaryEmailAddress?.emailAddress;
+  
+      const visible =
+        role === "admin" || role === "sadmin"
+          ? data
+          : data.filter((item) => item.email === userEmail);
+  
+      setListings(visible);
+      setFilteredListings(visible);
+    };
+  
+    fetchListings();
+  }, [role, user]);
     
   
   
