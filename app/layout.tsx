@@ -28,11 +28,48 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/logo.png" type="image/png" />
+        <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                  {
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,fr',
+                    autoDisplay: false
+                  },
+                  'google_translate_element'
+                );
+              }
+            `,
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              document.addEventListener("DOMContentLoaded", function () {
+                const userLang = navigator.language || navigator.userLanguage;
+                if (userLang.startsWith("fr")) {
+                  const interval = setInterval(() => {
+                    const select = document.querySelector(".goog-te-combo");
+                    if (select) {
+                      select.value = "fr";
+                      select.dispatchEvent(new Event("change"));
+                      clearInterval(interval);
+                    }
+                  }, 500);
+                }
+              });
+            `,
+          }}
+        />
       </body>
     </html>
     </ClerkProvider>
